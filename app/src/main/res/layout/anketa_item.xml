@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="190dp"
+    android:layout_height="200dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="40dp"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/border"
+    >
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="40dp"
+            android:layout_margin="2dp"
+            android:backgroundTint="@color/background">
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/naziv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Anketa 1"
+                    android:textColor="@color/textColor"
+                    android:textSize="20sp"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
+
+                <ImageView
+                    android:id="@+id/stanje"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_toRightOf="@+id/naziv"
+                    app:srcCompat="@drawable/crvena"></ImageView>
+
+                <TextView
+                    android:id="@+id/nazivIstrazivanja"
+                    android:layout_below="@+id/naziv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:text="Istraživanje broj 1"
+                    android:textColor="@color/textColor"
+                    android:textSize="15sp"></TextView>
+
+                <ProgressBar
+                    android:id="@+id/progresZavrsetka"
+                    android:layout_width="150dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nazivIstrazivanja"
+                    android:layout_centerHorizontal="true"
+                    style="@style/MyProgressBar">
+                </ProgressBar>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="161dp"
+                    android:layout_height="25dp"
+                    android:layout_below="@+id/progresZavrsetka"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:backgroundTint="@color/progressBar">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/datum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vrijeme zatvaranja: "
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"></TextView>
+
+                        <TextView
+                            android:id="@+id/datum1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="01.01.2022."
+                            android:textColor="@color/black"
+                            android:textSize="11dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/datum"
+                            android:textStyle="bold"></TextView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+</androidx.cardview.widget.CardView>
+
