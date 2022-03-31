@@ -1,9 +1,6 @@
 package ba.etf.rma22.projekat.data
 
 import ba.etf.rma22.projekat.data.models.Anketa
-import java.time.LocalDate
-import java.time.Month
-import java.time.ZoneId
 import java.util.*
 
 fun ankete(): List<Anketa> {
@@ -34,6 +31,7 @@ fun ankete(): List<Anketa> {
 
     cal.set(2023,3,13)
     var dat9: Date = cal.time;
+    //jedna anketa po grupi
     return listOf(
         Anketa("Anketa 1","Istraživanje broj 1",
             dat1,dat2,dat3,30,"Grupa 1",0.6F),
@@ -44,18 +42,18 @@ fun ankete(): List<Anketa> {
         Anketa("Anketa 3","Istraživanje broj 2",
             dat4,dat5,dat6,4,"Grupa 4",0.8F),
         Anketa("Anketa 3","Istraživanje broj 7",
-            dat4,dat5,dat6, 7,"Grupa 6",1F),
+            dat4,dat5,dat6, 7,"Grupa 5",1F),
         Anketa("Anketa 1","Istraživanje broj 5",
-            dat7,dat8,dat9, 7,"Grupa 7",0.2F),
+            dat7,dat8,dat9, 7,"Grupa 6",0.2F),
         Anketa("Anketa 1","Istraživanje broj 1",
-            dat7,dat8,dat9, 30,"Grupa 1",0.6F),
+            dat7,dat8,dat9, 30,"Grupa 7",0.6F),
         Anketa("Anketa 2","Istraživanje broj 1",
-            dat7,dat8,dat8, 56,"Grupa 2",0.4F),
+            dat7,dat8,dat8, 56,"Grupa 8",0.4F),
         Anketa("Anketa 2","Istraživanje broj 2",
-            dat1,dat2,dat3, 34,"Grupa 3",0.9F),
+            dat1,dat2,dat3, 34,"Grupa 9",0.9F),
         Anketa("Anketa 3","Istraživanje broj 2",
-            dat4,dat5,dat6, 4,"Grupa 4",0.8F),
+            dat4,dat5,dat6, 4,"Grupa 10",0.8F),
         Anketa("Anketa 3","Istraživanje broj 7",
-            dat4,dat5,dat6, 7,"Grupa 6",1F)
+            dat4,dat5,dat6, 7,"Grupa 11",1F)
     )
 }

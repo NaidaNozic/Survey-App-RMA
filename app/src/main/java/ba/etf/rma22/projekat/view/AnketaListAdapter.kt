@@ -21,7 +21,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
     override fun getItemCount(): Int = ankete.size
     override fun onBindViewHolder(holder: AnketaViewHolder, position: Int) {
         var a=ankete[position]
-        holder.movieTitle.text = a.naziv;
+        holder.title.text = a.naziv;
         holder.nazivIstrazivanja.text=a.nazivIstrazivanja;
         var pom:Int =(a.progres*10).toInt()
         holder.progresZavrsetka.progress=pom;
@@ -80,7 +80,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         notifyDataSetChanged()
     }
     inner class AnketaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val movieTitle: TextView = itemView.findViewById(R.id.naziv)
+        val title: TextView = itemView.findViewById(R.id.naziv)
         val nazivIstrazivanja: TextView = itemView.findViewById(R.id.nazivIstrazivanja)
         val progresZavrsetka: ProgressBar = itemView.findViewById(R.id.progresZavrsetka)
         val stanje: ImageView = itemView.findViewById(R.id.stanje)
