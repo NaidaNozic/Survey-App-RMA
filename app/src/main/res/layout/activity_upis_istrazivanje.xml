@@ -37,14 +37,14 @@
             android:layout_margin="10dp"
             android:text="Upiši me"></Button>
     </LinearLayout>
-<!--
+
     <TextView
-        android:id="@+id/text_za_text"
+        android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></TextView>
-        -->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

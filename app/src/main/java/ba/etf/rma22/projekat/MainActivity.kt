@@ -12,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import ba.etf.rma22.projekat.data.models.Korisnik
+import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -23,9 +25,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var spinner: Spinner
     private lateinit var button: FloatingActionButton
 
+    private var korisnik=Korisnik()
 
     lateinit var istrazivanje: String
-    private var rezultat:String?=""
     private var elementi_spinnera = arrayOf("Sve moje ankete", "Sve ankete",
         "Urađene ankete", "Buduće ankete", "Prošle (neurađene) ankete")
 
@@ -33,8 +35,7 @@ class MainActivity : AppCompatActivity() {
         StartActivityForResult(),
         ActivityResultCallback<ActivityResult> { result ->
             if (result.getResultCode() === RESULT_OK) {
-                rezultat=result.getData()!!.getStringExtra("rezultat")
-                istrazivanje=rezultat!!.split("::")[1]
+                korisnik=result.getData()!!.getSerializableExtra("rezultat")as Korisnik
             }
         })
 
@@ -44,9 +45,11 @@ class MainActivity : AppCompatActivity() {
         istrazivanje="Prazno"
         //button
         button=findViewById(R.id.upisDugme)
+
+        korisnik.setUpisane(IstrazivanjeRepository.getUpisani())
         button.setOnClickListener{
             val intent = Intent(this, UpisIstrazivanje::class.java)
-            intent.putExtra("poruka",istrazivanje)
+            intent.putExtra("poruka",korisnik)
             startForResult.launch(intent)
         }
 
