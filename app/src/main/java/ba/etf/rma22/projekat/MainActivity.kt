@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -13,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ba.etf.rma22.projekat.data.models.Korisnik
+import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,6 +47,8 @@ class MainActivity : AppCompatActivity() {
         button=findViewById(R.id.upisDugme)
 
         korisnik.setUpisane(IstrazivanjeRepository.getUpisani())
+        korisnik.setupisaneGrupe(GrupaRepository.getUpisani())
+
         button.setOnClickListener{
             val intent = Intent(this, UpisIstrazivanje::class.java)
             intent.putExtra("poruka",korisnik)
