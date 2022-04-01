@@ -75,8 +75,8 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         holder.datum1.text=dan.toString()+"."+mjesec+"."+god.toString()
         holder.stanje.setImageResource(id)
     }
-    fun updateAnkete(movies: List<Anketa>) {
-        this.ankete = movies
+    fun updateAnkete(a: List<Anketa>) {
+        this.ankete = a
         notifyDataSetChanged()
     }
     inner class AnketaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

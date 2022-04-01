@@ -8,8 +8,30 @@ class Korisnik:Serializable {
     private var upisanaIstrazivanja=mutableListOf<Istrazivanje>()
     private var upisaneGrupe= mutableListOf<Grupa>()
 
+    private lateinit var posljednjeOdabranoIstrazivanje:Istrazivanje
+    private lateinit var posljednjeOdabranaGrupa:Grupa
+    private var posljednjaGodina:Int=1
+
+    fun getPosljednjaGodina():Int{
+        return posljednjaGodina
+    }
+    fun setposljednjaGodina(g:Int){
+        posljednjaGodina=g
+    }
     fun getUpisanaIstrazivanja():List<Istrazivanje>{
         return upisanaIstrazivanja
+    }
+    fun setPosljednjeOdabranoIstrazivanje(i:Istrazivanje){
+        posljednjeOdabranoIstrazivanje=i
+    }
+    fun setPosljednjeOdabranaGrupa(g:Grupa){
+        posljednjeOdabranaGrupa=g
+    }
+    fun getPosljednjeOdabranoIstrazivanje():String{
+        return posljednjeOdabranoIstrazivanje.naziv
+    }
+    fun getPosljednjeOdabranaGrupa():String{
+        return posljednjeOdabranaGrupa.naziv
     }
     fun getupisaneGrupe():List<Grupa>{
         return upisaneGrupe

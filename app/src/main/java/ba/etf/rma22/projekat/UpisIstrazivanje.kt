@@ -15,26 +15,26 @@ import ba.etf.rma22.projekat.viewmodel.KorisnikListViewModel
 
 
 class UpisIstrazivanje : AppCompatActivity() {
-    private var istrazivanjeListViewModel=KorisnikListViewModel()
     private lateinit var dodajIstrazivanjeDugme:Button
     private lateinit var spinnerGodine: Spinner
     private lateinit var spinnerIstrazivanja: Spinner
     private lateinit var spinnerGrupe: Spinner
-    private var godine = arrayOf(1,2,3,4,5)
+    private var godine = mutableListOf(1,2,3,4,5)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upis_istrazivanje)
+
+        var korisnik=getIntent().getSerializableExtra("poruka")as? Korisnik
 
         //spinner za godine
         spinnerGodine=findViewById(R.id.odabirGodina)
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, godine)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGodine!!.setAdapter(arrayAdapter)
+        spinnerGodine.setSelection(korisnik!!.getPosljednjaGodina()-1)
 
         //spinner za istrazivanja
-        var korisnik=getIntent().getSerializableExtra("poruka")as? Korisnik
-
         spinnerIstrazivanja=findViewById(R.id.odabirIstrazivanja)
         val arrayAdapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, korisnik!!.getNeupisanaIstrazivanja())
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -56,10 +56,17 @@ class UpisIstrazivanje : AppCompatActivity() {
             var group=spinnerGrupe.selectedItem.toString()
             var Istrazivanje1=getIstrazivanjeByNameAndYear(name,year)
             var grupa1=getGroupByNameAndIstrazivanje(group,name)
-            if(Istrazivanje1!=null)
+
+            if(Istrazivanje1!=null) {
                 korisnik.addIstrazivanja(Istrazivanje1)
-            if(grupa1!=null)
+                korisnik.setPosljednjeOdabranoIstrazivanje(Istrazivanje1)
+                korisnik.setposljednjaGodina(spinnerGodine.selectedItem.toString().toInt())
+            }
+            if(grupa1!=null) {
                 korisnik.addGrupu(grupa1)
+                korisnik.setPosljednjeOdabranaGrupa(grupa1)
+            }
+
             val intent=Intent()
             intent.putExtra("rezultat",korisnik)
             setResult(RESULT_OK,intent)

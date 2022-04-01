@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -36,6 +37,15 @@ class MainActivity : AppCompatActivity() {
         ActivityResultCallback<ActivityResult> { result ->
             if (result.getResultCode() === RESULT_OK) {
                 korisnik=result.getData()!!.getSerializableExtra("rezultat")as Korisnik
+                //refreshati listu anketa
+                var noveAnkete=anketeListViewModel.getAnkete().toMutableList()
+                noveAnkete.removeAll { a->a.nazivIstrazivanja!=korisnik!!.getPosljednjeOdabranoIstrazivanje() ||
+                                          a.nazivGrupe!=korisnik!!.getPosljednjeOdabranaGrupa()}
+                anketeAdapter.updateAnkete(noveAnkete)
+
+                var test=findViewById<TextView>(R.id.test)
+                test.text=korisnik!!.getPosljednjeOdabranoIstrazivanje()+" group: "+
+                        korisnik!!.getPosljednjeOdabranaGrupa()
             }
         })
 
