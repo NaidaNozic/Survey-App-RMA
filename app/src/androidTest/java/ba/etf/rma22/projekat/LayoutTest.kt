@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 class LayoutTest {
     @get:Rule
     val mainLayout = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
-/*
+
     @Test
     fun relativeLayoutPositionsPocetna(){
         Espresso.onView(withId(R.id.filterAnketa)).check(
@@ -60,7 +60,7 @@ class LayoutTest {
 
     }
 
-*/
+
 
 }
 

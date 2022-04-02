@@ -70,7 +70,7 @@ class UpisIstrazivanje : AppCompatActivity() {
             finish()
         }
         //selektovanje godine mijenja istrazivanja
-        spinnerGodine?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinnerGodine.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -80,7 +80,7 @@ class UpisIstrazivanje : AppCompatActivity() {
             }
         }
         //selektovanje istrazivanja mijenja grupu
-        spinnerIstrazivanja?.onItemSelectedListener=object:AdapterView.OnItemSelectedListener{
+        spinnerIstrazivanja.onItemSelectedListener=object:AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 

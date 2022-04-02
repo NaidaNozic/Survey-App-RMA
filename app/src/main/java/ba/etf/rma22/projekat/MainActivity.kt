@@ -3,9 +3,10 @@ package ba.etf.rma22.projekat
 import AnketaListAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ba.etf.rma22.projekat.data.models.Korisnik
+import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var korisnik=Korisnik()
 
     lateinit var istrazivanje: String
-    private var elementi_spinnera = arrayOf("Sve moje ankete", "Sve ankete",
+    private var elementi_spinnera = arrayOf("Sve ankete","Sve moje ankete",
         "Urađene ankete", "Buduće ankete", "Prošle (neurađene) ankete")
 
     var startForResult = registerForActivityResult(
@@ -39,8 +41,8 @@ class MainActivity : AppCompatActivity() {
                 korisnik=result.getData()!!.getSerializableExtra("rezultat")as Korisnik
                 //refreshati listu anketa
                 var noveAnkete=anketeListViewModel.getAnkete().toMutableList()
-                noveAnkete.removeAll { a->a.nazivIstrazivanja!=korisnik!!.getPosljednjeOdabranoIstrazivanje() ||
-                                          a.nazivGrupe!=korisnik!!.getPosljednjeOdabranaGrupa()}
+                noveAnkete.removeAll { a->a.nazivIstrazivanja!=korisnik.getPosljednjeOdabranoIstrazivanje() ||
+                                          a.nazivGrupe!=korisnik.getPosljednjeOdabranaGrupa()}
                 anketeAdapter.updateAnkete(noveAnkete)
             }
         })
@@ -67,6 +69,27 @@ class MainActivity : AppCompatActivity() {
         //postavljam layout koji ce se koristiti kada se elementi spinnera pojave
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner!!.setAdapter(arrayAdapter)
+
+        //klik na spinner-a
+        spinner.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                var odabran=parent!!.getItemAtPosition(position).toString();
+                if(odabran=="Sve moje ankete"){
+                    anketeAdapter.updateAnkete(AnketaRepository.getMyAnkete())
+                }else if(odabran=="Sve ankete"){
+                    anketeAdapter.updateAnkete(AnketaRepository.getAll())
+                }else if(odabran=="Urađene ankete"){
+                    anketeAdapter.updateAnkete(AnketaRepository.getDone())
+                }else if(odabran=="Buduće ankete"){
+                    anketeAdapter.updateAnkete(AnketaRepository.getFuture())
+                }else if(odabran=="Prošle (neurađene) ankete"){
+                    anketeAdapter.updateAnkete(AnketaRepository.getNotTaken())
+                }
+            }
+        }
 
         //ankete
         ankete = findViewById(R.id.listaAnketa)
