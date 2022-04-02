@@ -31,8 +31,13 @@ class MainActivity : AppCompatActivity() {
     private var korisnik=Korisnik()
 
     lateinit var istrazivanje: String
-    private var elementi_spinnera = arrayOf("Sve ankete","Sve moje ankete",
-        "Urađene ankete", "Buduće ankete", "Prošle (neurađene) ankete")
+    private var elementi_spinnera = arrayOf(
+        "Sve moje ankete",
+        "Sve ankete",
+        "Urađene ankete",
+        "Buduće ankete",
+        "Prošle ankete"
+    )
 
     var startForResult = registerForActivityResult(
         StartActivityForResult(),
@@ -68,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, elementi_spinnera)
         //postavljam layout koji ce se koristiti kada se elementi spinnera pojave
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner!!.setAdapter(arrayAdapter)
+        spinner.setAdapter(arrayAdapter)
 
         //klik na spinner-a
         spinner.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
@@ -85,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                     anketeAdapter.updateAnkete(AnketaRepository.getDone())
                 }else if(odabran=="Buduće ankete"){
                     anketeAdapter.updateAnkete(AnketaRepository.getFuture())
-                }else if(odabran=="Prošle (neurađene) ankete"){
+                }else if(odabran=="Prošle ankete"){
                     anketeAdapter.updateAnkete(AnketaRepository.getNotTaken())
                 }
             }

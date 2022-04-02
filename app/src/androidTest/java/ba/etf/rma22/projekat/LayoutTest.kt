@@ -11,7 +11,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 class LayoutTest {
     @get:Rule
@@ -59,9 +58,4 @@ class LayoutTest {
         Espresso.onView(withId(R.id.odabirGrupa)).check(isCompletelyAbove(withId(R.id.dodajIstrazivanjeDugme)))
 
     }
-
-
-
 }
-
-

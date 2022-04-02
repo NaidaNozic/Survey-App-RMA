@@ -17,7 +17,7 @@ class UpisIstrazivanje : AppCompatActivity() {
     private lateinit var spinnerGodine: Spinner
     private lateinit var spinnerIstrazivanja: Spinner
     private lateinit var spinnerGrupe: Spinner
-    private var godine = mutableListOf(1,2,3,4,5)
+    private var godine = mutableListOf("1","2","3","4","5")
     private lateinit var korisnik: Korisnik
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,20 +30,20 @@ class UpisIstrazivanje : AppCompatActivity() {
         spinnerGodine=findViewById(R.id.odabirGodina)
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, godine)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerGodine!!.setAdapter(arrayAdapter)
-        spinnerGodine.setSelection(korisnik!!.getPosljednjaGodina()-1)
+        spinnerGodine.setAdapter(arrayAdapter)
+        spinnerGodine.setSelection(korisnik.getPosljednjaGodina()-1)
 
         //spinner za istrazivanja
         spinnerIstrazivanja=findViewById(R.id.odabirIstrazivanja)
         val arrayAdapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOf<String>())
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerIstrazivanja!!.setAdapter(arrayAdapter1)
+        spinnerIstrazivanja.setAdapter(arrayAdapter1)
 
         //spiner za grupe
         spinnerGrupe=findViewById(R.id.odabirGrupa)
         val arrayAdapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item,listOf<String>())
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerGrupe!!.setAdapter(arrayAdapter2)
+        spinnerGrupe.setAdapter(arrayAdapter2)
 
         //klik na upisi me
         dodajIstrazivanjeDugme=findViewById(R.id.dodajIstrazivanjeDugme)
@@ -105,18 +105,17 @@ class UpisIstrazivanje : AppCompatActivity() {
         }
     }
     fun updateSpinnerGrupe(odabranoIstr:String){
-        if(odabranoIstr==null)spinnerGrupe!!.setAdapter(null)
-        else {
+        //if(odabranoIstr==null)spinnerGrupe.setAdapter(null)
             var tmp = korisnik.getGrupePoNeupisanimIstrazivanjima1().toMutableList()
-            tmp.removeAll { g -> korisnik!!.getupisaneGrupe().contains(g) }
+            tmp.removeAll { g -> korisnik.getupisaneGrupe().contains(g) }
             tmp.removeAll { g -> g.nazivIstrazivanja != odabranoIstr }
             var tmp1 = tmp.map { g -> g.naziv }
 
             spinnerGrupe = findViewById(R.id.odabirGrupa)
             val arrayAdapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, tmp1)
             arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerGrupe!!.setAdapter(arrayAdapter2)
-        }
+            spinnerGrupe.setAdapter(arrayAdapter2)
+
     }
     fun getIstrazivanjeByNameAndYear(name:String,year:String): Istrazivanje? {
         return IstrazivanjeRepository.getIstrazivanjeByGodina(Integer.parseInt(year)).find { i->i.naziv==name  }

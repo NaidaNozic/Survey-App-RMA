@@ -57,7 +57,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
             id = context.getResources()
                 .getIdentifier("plava", "drawable", context.getPackageName())
             holder.datum.text="Anketa urađena: "
-            calendar.time = a.datumRada
+            calendar.time = a.datumRada!!
         }else if(zuta==1){
             id = context.getResources()
                 .getIdentifier("zuta", "drawable", context.getPackageName())

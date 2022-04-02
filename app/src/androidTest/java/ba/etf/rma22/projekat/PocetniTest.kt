@@ -1,4 +1,3 @@
-
 package ba.etf.rma22.projekat
 
 import androidx.test.espresso.Espresso.onData
@@ -21,14 +20,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.hamcrest.CoreMatchers.`is` as Is
 
+
 @RunWith(AndroidJUnit4::class)
 class PocetniTest {
-
     @get:Rule
     val intentsTestRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
-/*
+
     @Test
-    fun postojiSveNaPocetnoj() {
+    fun postojiSveNaPocetnoj() { //prolazi
 
         onView(withId(R.id.filterAnketa)).check(matches(isDisplayed()))
         onView(withId(R.id.listaAnketa)).check(matches(isDisplayed()))
@@ -50,7 +49,7 @@ class PocetniTest {
     }
 
     @Test
-    fun popuniAnketeGetDone() {
+    fun popuniAnketeGetDone() { //prolazi
 
         onView(withId(R.id.filterAnketa)).perform(click())
         onData(allOf(Is(instanceOf(String::class.java)), Is("Sve moje ankete"))).perform(click())
@@ -64,7 +63,7 @@ class PocetniTest {
     }
 
     @Test
-    fun godineTest() {
+    fun godineTest() { //prolazi
         onView(withId(R.id.upisDugme)).perform(click())
         var listaOdabira = listOf<String>("1", "2", "3", "4", "5")
         for (odabir in listaOdabira) {
@@ -74,7 +73,7 @@ class PocetniTest {
     }
 
     @Test
-    fun filtriranjeTest() {
+    fun filtriranjeTest(){ //prolazi
         var listaOdabira = listOf<String>(
             "Sve moje ankete",
             "Sve ankete",
@@ -87,23 +86,22 @@ class PocetniTest {
             onView(withId(R.id.filterAnketa)).perform(click())
             onData(allOf(Is(instanceOf(String::class.java)), Is(odabir))).perform(click())
             var ankete = emptyList<Anketa>()
-            when (odabir) {
-                "Sve moje ankete" -> ankete = AnketaRepository.getMyAnkete()
-                "Sve ankete" -> ankete = AnketaRepository.getAll()
-                "Urađene ankete" -> ankete = AnketaRepository.getDone()
-                "Buduće ankete" -> ankete = AnketaRepository.getFuture()
-                "Prošle ankete" -> ankete = AnketaRepository.getNotTaken()
+            when(odabir){
+                "Sve moje ankete" -> ankete=AnketaRepository.getMyAnkete()
+                "Sve ankete" -> ankete=AnketaRepository.getAll()
+                "Urađene ankete" -> ankete=AnketaRepository.getDone()
+                "Buduće ankete" -> ankete=AnketaRepository.getFuture()
+                "Prošle ankete" -> ankete=AnketaRepository.getNotTaken()
             }
-            kolikoAnketa += ankete.size
+            kolikoAnketa+=ankete.size
             onView(withId(R.id.listaAnketa)).check(hasItemCount(ankete.size))
-            var posjeceni: MutableList<Int> = mutableListOf()
+            var posjeceni:MutableList<Int> = mutableListOf()
             for (anketa in ankete) {
-                itemTestNotVisited(R.id.listaAnketa, anketa, posjeceni)
+                itemTestNotVisited(R.id.listaAnketa, anketa,posjeceni)
             }
         }
         val ukupno = AnketaRepository.getAll().size
-        kolikoAnketa -= ukupno
+        kolikoAnketa-=ukupno
         assertThat(kolikoAnketa, allOf(Is(greaterThan(0))))
     }
-*/
 }

@@ -1,6 +1,5 @@
 @file:Suppress("PackageDirectoryMismatch")
 package ba.etf.rma22.projekat
-
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -36,6 +35,7 @@ class UtilTestClass {
             }
 
         }
+
         fun withDrawable(@DrawableRes id: Int) = object : TypeSafeMatcher<View>() {
             override fun describeTo(description: Description) {
                 description.appendText("ImageView with drawable same as drawable with id $id")
@@ -48,6 +48,7 @@ class UtilTestClass {
                 return view is ImageView && view.drawable.toBitmap().sameAs(expectedBitmap)
             }
         }
+
         fun itemTest(id: Int, k: Anketa) {
             Espresso.onView(ViewMatchers.withId(R.id.listaAnketa)).perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
@@ -59,10 +60,12 @@ class UtilTestClass {
 
             )
         }
-        fun itemTestNotVisited(id: Int, k: Anketa, posjeceni:MutableList<Int>) {
+
+        fun itemTestNotVisited(id: Int, k: Anketa, posjeceni: MutableList<Int>) {
             Espresso.onView(ViewMatchers.withId(R.id.listaAnketa)).perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    firstNotVisited(posjeceni,
+                    firstNotVisited(
+                        posjeceni,
                         CoreMatchers.allOf(
                             ViewMatchers.hasDescendant(ViewMatchers.withText(k.naziv)),
                             ViewMatchers.hasDescendant(ViewMatchers.withText(k.nazivIstrazivanja))
@@ -71,21 +74,25 @@ class UtilTestClass {
                 )
             )
         }
-        fun firstNotVisited(posjeceni: MutableList<Int>,matcher: Matcher<View>) = object: TypeSafeMatcher<View>(){
-            override fun describeTo(description: Description) {
-                description.appendText("Više puta machan isti objekat")
-            }
-            override fun matchesSafely(item: View): Boolean {
-                val uqCode = System.identityHashCode(item)
-                val posjecen = posjeceni.indexOf(uqCode)>-1
-                if (!posjecen && matcher.matches(item)) {
-                    posjeceni.add(uqCode)
-                    return true;
+
+        fun firstNotVisited(posjeceni: MutableList<Int>, matcher: Matcher<View>) =
+            object : TypeSafeMatcher<View>() {
+                override fun describeTo(description: Description) {
+                    description.appendText("Više puta machan isti objekat")
                 }
-                return false
+
+                override fun matchesSafely(item: View): Boolean {
+                    val uqCode = System.identityHashCode(item)
+                    val posjecen = posjeceni.indexOf(uqCode) > -1
+                    if (!posjecen && matcher.matches(item)) {
+                        posjeceni.add(uqCode)
+                        return true;
+                    }
+                    return false
+                }
+
             }
 
-        }
         fun atPosition(position: Int, itemMatcher: Matcher<View?>): Matcher<View?>? {
             checkNotNull(itemMatcher)
             return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
