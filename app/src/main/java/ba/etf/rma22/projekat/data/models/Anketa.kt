@@ -10,5 +10,5 @@ data class Anketa (
     val datumRada: Date?,
     val trajanje: Int,
     val nazivGrupe: String,
-    val progres: Float
+    var progres: Float
 )

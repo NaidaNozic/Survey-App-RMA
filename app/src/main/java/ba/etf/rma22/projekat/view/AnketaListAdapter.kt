@@ -23,6 +23,18 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         var a=ankete[position]
         holder.title.text = a.naziv;
         holder.nazivIstrazivanja.text=a.nazivIstrazivanja;
+
+        if(a.progres>0 && a.progres<0.2){
+            if(0F+0.1<a.progres) a.progres=0.2F else a.progres=0F
+        }else if(a.progres>0.2 && a.progres<0.4){
+            if(0.2+0.1<a.progres) a.progres=0.4F else a.progres=0.2F
+        }else if(a.progres>0.4 && a.progres<0.6){
+            if(0.4+0.1<a.progres) a.progres=0.6F else a.progres=0.4F
+        }else if(a.progres>0.6 && a.progres<0.8){
+            if(0.6+0.1<a.progres) a.progres=0.8F else a.progres=0.6F
+        }else if(a.progres>0.8 && a.progres<1){
+            if(0.8+0.1<a.progres) a.progres=1F else a.progres=0.8F
+        }
         var pom:Int =(a.progres*10).toInt()
         holder.progresZavrsetka.progress=pom;
 
