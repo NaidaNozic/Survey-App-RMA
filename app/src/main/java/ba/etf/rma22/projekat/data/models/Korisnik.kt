@@ -53,6 +53,15 @@ class Korisnik:Serializable {
                 neupisane.add(n.naziv)
         return neupisane
     }
+    fun getNeupisanaIstrazivanja1():List<Istrazivanje>{
+        var neupisane=mutableListOf<Istrazivanje>()
+        var upisane=upisanaIstrazivanja
+        var svi= IstrazivanjeRepository.getAll()
+        for(n in svi)
+            if(!upisane.any { u->u.naziv==n.naziv && u.godina==n.godina})
+                neupisane.add(n)
+        return neupisane
+    }
     fun getGrupePoNeupisanimIstrazivanjima():List<String>{
         var rez= listOf<Grupa>()
         var neupisanaIstrazivanja=getNeupisanaIstrazivanja()
@@ -61,6 +70,14 @@ class Korisnik:Serializable {
         }
         var rez1= rez.map { r->r.naziv }
         return rez1
+    }
+    fun getGrupePoNeupisanimIstrazivanjima1():List<Grupa>{
+        var rez= listOf<Grupa>()
+        var neupisanaIstrazivanja=getNeupisanaIstrazivanja()
+        for(n in neupisanaIstrazivanja){
+            rez=rez.union(GrupaRepository.getGroupsByIstrazivanje(n)).toList()
+        }
+        return rez
     }
     fun addIstrazivanja(i:Istrazivanje){
         upisanaIstrazivanja.add(i)

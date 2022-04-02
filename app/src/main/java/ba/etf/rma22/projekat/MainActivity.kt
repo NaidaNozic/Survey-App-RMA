@@ -42,10 +42,6 @@ class MainActivity : AppCompatActivity() {
                 noveAnkete.removeAll { a->a.nazivIstrazivanja!=korisnik!!.getPosljednjeOdabranoIstrazivanje() ||
                                           a.nazivGrupe!=korisnik!!.getPosljednjeOdabranaGrupa()}
                 anketeAdapter.updateAnkete(noveAnkete)
-
-                var test=findViewById<TextView>(R.id.test)
-                test.text=korisnik!!.getPosljednjeOdabranoIstrazivanje()+" group: "+
-                        korisnik!!.getPosljednjeOdabranaGrupa()
             }
         })
 
