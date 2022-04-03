@@ -21,8 +21,8 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
     override fun getItemCount(): Int = ankete.size
     override fun onBindViewHolder(holder: AnketaViewHolder, position: Int) {
         var a=ankete[position]
-        holder.title.text = a.naziv;
-        holder.nazivIstrazivanja.text=a.nazivIstrazivanja;
+        holder.title.text = a.naziv
+        holder.nazivIstrazivanja.text=a.nazivIstrazivanja
 
         if(a.progres>0 && a.progres<0.2){
             if(0F+0.1<a.progres) a.progres=0.2F else a.progres=0F
@@ -35,8 +35,8 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         }else if(a.progres>0.8 && a.progres<1){
             if(0.8+0.1<a.progres) a.progres=1F else a.progres=0.8F
         }
-        var pom:Int =(a.progres*10).toInt()
-        holder.progresZavrsetka.progress=pom;
+        val pom:Int =(a.progres*10).toInt()
+        holder.progresZavrsetka.progress=pom
 
         //stanje ankete
         var plava=0
@@ -54,7 +54,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
 
         val calendar = Calendar.getInstance()
 
-        var id:Int
+        val id:Int
         if(crvena==1){
             id = context.getResources()
                 .getIdentifier("crvena", "drawable", context.getPackageName())
@@ -81,9 +81,9 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
             holder.datum.text="Vrijeme aktiviranja: "
             calendar.time = a.datumPocetak
         }
-        var god=calendar.get(Calendar.YEAR);
-        var mjesec=calendar.get(Calendar.MONTH);
-        var dan=calendar.get(Calendar.DAY_OF_MONTH);
+        val god=calendar.get(Calendar.YEAR)
+        val mjesec=calendar.get(Calendar.MONTH)
+        val dan=calendar.get(Calendar.DAY_OF_MONTH)
         holder.datum1.text=dan.toString()+"."+mjesec+"."+god.toString()
         holder.stanje.setImageResource(id)
     }

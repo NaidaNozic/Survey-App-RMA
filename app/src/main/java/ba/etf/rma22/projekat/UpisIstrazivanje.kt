@@ -35,39 +35,39 @@ class UpisIstrazivanje : AppCompatActivity() {
 
         //spinner za istrazivanja
         spinnerIstrazivanja=findViewById(R.id.odabirIstrazivanja)
-        val arrayAdapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOf<String>())
+        val arrayAdapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOf("Odaberite istraživanje:"))
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerIstrazivanja.setAdapter(arrayAdapter1)
 
         //spiner za grupe
         spinnerGrupe=findViewById(R.id.odabirGrupa)
-        val arrayAdapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item,listOf<String>())
+        val arrayAdapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item,listOf("Odaberite grupu:"))
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGrupe.setAdapter(arrayAdapter2)
 
         //klik na upisi me
         dodajIstrazivanjeDugme=findViewById(R.id.dodajIstrazivanjeDugme)
-        dodajIstrazivanjeDugme.setOnClickListener{
-            var name=spinnerIstrazivanja.selectedItem.toString()
-            var year=spinnerGodine.selectedItem.toString()
-            var group=spinnerGrupe.selectedItem.toString()
-            var Istrazivanje1=getIstrazivanjeByNameAndYear(name,year)
-            var grupa1=getGroupByNameAndIstrazivanje(group,name)
+        dodajIstrazivanjeDugme.setOnClickListener {
+                var name = spinnerIstrazivanja.selectedItem.toString()
+                var year = spinnerGodine.selectedItem.toString()
+                var group = spinnerGrupe.selectedItem.toString()
+                var Istrazivanje1 = getIstrazivanjeByNameAndYear(name, year)
+                var grupa1 = getGroupByNameAndIstrazivanje(group, name)
 
-            if(Istrazivanje1!=null) {
-                korisnik.addIstrazivanja(Istrazivanje1)
-                korisnik.setPosljednjeOdabranoIstrazivanje(Istrazivanje1)
-                korisnik.setposljednjaGodina(spinnerGodine.selectedItem.toString().toInt())
-            }
-            if(grupa1!=null) {
-                korisnik.addGrupu(grupa1)
-                korisnik.setPosljednjeOdabranaGrupa(grupa1)
-            }
+                if (Istrazivanje1 != null) {
+                    korisnik.addIstrazivanja(Istrazivanje1)
+                    korisnik.setPosljednjeOdabranoIstrazivanje(Istrazivanje1)
+                    korisnik.setposljednjaGodina(spinnerGodine.selectedItem.toString().toInt())
+                }
+                if (grupa1 != null) {
+                    korisnik.addGrupu(grupa1)
+                    korisnik.setPosljednjeOdabranaGrupa(grupa1)
+                }
 
-            val intent=Intent()
-            intent.putExtra("rezultat",korisnik)
-            setResult(RESULT_OK,intent)
-            finish()
+                val intent = Intent()
+                intent.putExtra("rezultat", korisnik)
+                setResult(RESULT_OK, intent)
+                finish()
         }
         //selektovanje godine mijenja istrazivanja
         spinnerGodine.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -89,11 +89,22 @@ class UpisIstrazivanje : AppCompatActivity() {
                 updateSpinnerGrupe(odabrano)
             }
         }
+        spinnerGrupe.onItemSelectedListener=object:AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                var odabrano=parent!!.getItemAtPosition(position).toString()
+                if(odabrano=="Odaberite grupu:")  dodajIstrazivanjeDugme.isEnabled = false
+                else   dodajIstrazivanjeDugme.isEnabled = true
+            }
+        }
     }
     fun updateSpinnerIstrazivanje(odabranaGodina:String){
         var istrazivanja=korisnik.getNeupisanaIstrazivanja1().toMutableList()
         istrazivanja.removeAll { i->i.godina!=odabranaGodina.toInt()}
-        var novo=istrazivanja.map { p->p.naziv }.toList()
+        var novo=istrazivanja.map { p->p.naziv }.toMutableList()
+        novo.add(0,"Odaberite istraživanje:")
         if(novo.size==0){
             spinnerIstrazivanja.setAdapter(null)
             spinnerGrupe.setAdapter(null)
@@ -105,12 +116,18 @@ class UpisIstrazivanje : AppCompatActivity() {
         }
     }
     fun updateSpinnerGrupe(odabranoIstr:String){
-        //if(odabranoIstr==null)spinnerGrupe.setAdapter(null)
+        var tmp1:MutableList<String>
+        if(spinnerIstrazivanja.selectedItem.toString()=="Odaberite istraživanje:") {
+            dodajIstrazivanjeDugme.isEnabled = false
+            tmp1= mutableListOf("Odaberite grupu:")
+        }else {
+            dodajIstrazivanjeDugme.isEnabled = true
             var tmp = korisnik.getGrupePoNeupisanimIstrazivanjima1().toMutableList()
             tmp.removeAll { g -> korisnik.getupisaneGrupe().contains(g) }
             tmp.removeAll { g -> g.nazivIstrazivanja != odabranoIstr }
-            var tmp1 = tmp.map { g -> g.naziv }
-
+            tmp1 = tmp.map { g -> g.naziv }.toMutableList()
+            tmp1.add(0, "Odaberite grupu:")
+        }
             spinnerGrupe = findViewById(R.id.odabirGrupa)
             val arrayAdapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, tmp1)
             arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
