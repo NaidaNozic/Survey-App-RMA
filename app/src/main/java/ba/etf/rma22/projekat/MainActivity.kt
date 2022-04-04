@@ -13,12 +13,14 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Korisnik
 import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,17 +40,13 @@ class MainActivity : AppCompatActivity() {
         "Buduće ankete",
         "Prošle ankete"
     )
-
     var startForResult = registerForActivityResult(
         StartActivityForResult(),
         ActivityResultCallback<ActivityResult> { result ->
             if (result.getResultCode() === RESULT_OK) {
                 korisnik=result.getData()!!.getSerializableExtra("rezultat")as Korisnik
                 //refreshati listu anketa
-                var noveAnkete=anketeListViewModel.getAnkete().toMutableList()
-                noveAnkete.removeAll { a->a.nazivIstrazivanja!=korisnik.getPosljednjeOdabranoIstrazivanje() ||
-                                          a.nazivGrupe!=korisnik.getPosljednjeOdabranaGrupa()}
-                anketeAdapter.updateAnkete(noveAnkete)
+                promjenaAnketa(spinner.selectedItem.toString())
             }
         })
 
@@ -82,25 +80,28 @@ class MainActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 var odabran=parent!!.getItemAtPosition(position).toString();
-                if(odabran=="Sve moje ankete"){
-                    anketeAdapter.updateAnkete(AnketaRepository.getMyAnkete())
-                }else if(odabran=="Sve ankete"){
-                    anketeAdapter.updateAnkete(AnketaRepository.getAll())
-                }else if(odabran=="Urađene ankete"){
-                    anketeAdapter.updateAnkete(AnketaRepository.getDone())
-                }else if(odabran=="Buduće ankete"){
-                    anketeAdapter.updateAnkete(AnketaRepository.getFuture())
-                }else if(odabran=="Prošle ankete"){
-                    anketeAdapter.updateAnkete(AnketaRepository.getNotTaken())
-                }
+                promjenaAnketa(odabran)
             }
         }
-
         //ankete
         ankete = findViewById(R.id.listaAnketa)
         ankete.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        anketeAdapter = AnketaListAdapter(listOf())//praznu listu mu prosljedjujemo inicijalno
+        anketeAdapter = AnketaListAdapter(mutableListOf())//praznu listu mu prosljedjujemo inicijalno
         ankete.adapter = anketeAdapter
         anketeAdapter.updateAnkete(anketeListViewModel.getAnkete())
+    }
+    fun promjenaAnketa(o:String){
+        if(o=="Sve moje ankete"){
+            anketeAdapter.updateAnkete(AnketaRepository.getMyAnkete(korisnik.getUpisanaIstrazivanja(),
+                korisnik.getupisaneGrupe()))
+        }else if(o=="Sve ankete"){
+            anketeAdapter.updateAnkete(AnketaRepository.getAll())
+        }else if(o=="Urađene ankete"){
+            anketeAdapter.updateAnkete(AnketaRepository.getDone(korisnik.getupisaneGrupe()))
+        }else if(o=="Buduće ankete"){
+            anketeAdapter.updateAnkete(AnketaRepository.getFuture(korisnik.getupisaneGrupe()))
+        }else if(o=="Prošle ankete"){
+            anketeAdapter.updateAnkete(AnketaRepository.getNotTaken(korisnik.getupisaneGrupe()))
+        }
     }
 }

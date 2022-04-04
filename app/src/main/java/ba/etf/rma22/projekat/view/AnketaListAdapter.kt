@@ -10,7 +10,7 @@ import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import java.util.*
 
-class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
+class AnketaListAdapter(private var ankete: MutableList<Anketa>) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnketaViewHolder {
         val view = LayoutInflater
@@ -88,8 +88,12 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         holder.stanje.setImageResource(id)
     }
     fun updateAnkete(a: List<Anketa>) {
-        this.ankete = a
+        this.ankete = a.toMutableList()
         notifyDataSetChanged()
+    }
+    fun addAnketu(a:Anketa){
+        this.ankete.add(a)
+        notifyItemInserted(ankete.size - 1);
     }
     inner class AnketaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.naziv)
