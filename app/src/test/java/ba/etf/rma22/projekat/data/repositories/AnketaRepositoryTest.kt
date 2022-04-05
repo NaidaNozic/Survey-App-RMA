@@ -171,6 +171,12 @@ class AnketaRepositoryTest {
         cal.set(2023,3,13)
         var dat9: Date = cal.time;
 
+        cal.set(2018,3,10)
+        var dat4: Date = cal.time;
+
+        cal.set(2022,7,13)
+        var dat10: Date = cal.time;
+
         var grupe=listOf(Grupa("Grupa 9","Istraživanje broj 3"),
             Grupa("Grupa 3","Istraživanje broj 2"),
             Grupa("Grupa 4","Istraživanje broj 2"),
@@ -180,7 +186,9 @@ class AnketaRepositoryTest {
         var dobijene=AnketaRepository.getFuture(grupe).toMutableList().map { d->d.nazivIstrazivanja+" "+d.nazivGrupe }
 
         var ocekivane= listOf(Anketa("Anketa 6","Istraživanje broj 5",
-            dat7,dat8,dat9, 7,"Grupa 6",0.2F)).toMutableList().
+            dat7,dat8,dat9, 7,"Grupa 6",0.2F),
+            Anketa("Anketa 14","Istraživanje broj 3", //zuta
+                dat4,dat10,null, 34,"Grupa 9",0.0F)).toMutableList().
         map { o->o.nazivIstrazivanja+" "+o.nazivGrupe }
 
         assertTrue(ocekivane.size==dobijene.size)
