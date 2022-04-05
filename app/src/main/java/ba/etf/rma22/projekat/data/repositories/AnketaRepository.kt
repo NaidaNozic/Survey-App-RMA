@@ -8,10 +8,9 @@ import java.util.*
 
 object AnketaRepository {
     fun getAll() : List<Anketa> { //sve ankete
-        val ankete= ankete()
-        ankete.toMutableList().sortedBy { it.datumPocetak }
-        return ankete;
+        return ankete().sortedBy{it.datumPocetak};
     }
+
     fun getMyAnkete() : List<Anketa>{//sve moje ankete
         //ankete sa upisanim istrazivanjima i grupama
         var ankete=ankete()
@@ -23,7 +22,7 @@ object AnketaRepository {
                 for(a in ankete){
                     if(a.nazivIstrazivanja==i.naziv && a.nazivGrupe==g.naziv) rez.add(a)
                 }
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getMyAnkete(dodatnaIstr: List<Istrazivanje>,dodatneGrupe:List<Grupa>) : List<Anketa>{//sve moje ankete
@@ -36,7 +35,7 @@ object AnketaRepository {
                 for(a in ankete){
                     if(a.nazivIstrazivanja==i.naziv && a.nazivGrupe==g.naziv) rez.add(a)
                 }
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getDone() : List<Anketa>{ //uradjene ankete
@@ -48,7 +47,7 @@ object AnketaRepository {
             for(a in ankete)
                 if(a.nazivGrupe==g.naziv && a.progres==1F && a.datumRada!=null
                     && a.datumKraj> Date() && a.datumPocetak< Date())rez.add(a)
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getDone(dodatne:List<Grupa>) : List<Anketa>{
@@ -58,7 +57,7 @@ object AnketaRepository {
             for(a in ankete)
                 if(a.nazivGrupe==g.naziv && a.progres==1F && a.datumRada!=null
                     && a.datumKraj> Date() && a.datumPocetak< Date())rez.add(a)
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getFuture() : List<Anketa>{//buduce ankete
@@ -68,10 +67,10 @@ object AnketaRepository {
         for(g in GrupaRepository.getUpisani())
             for(a in ankete)
                 if(a.nazivGrupe==g.naziv){
-                    if(a.datumKraj> Date() && a.datumPocetak<Date() && a.progres<1F && a.datumRada!=null)rez.add(a)
+                    if(a.datumKraj>Date() && a.datumPocetak<Date() && a.progres<1F)rez.add(a)
                     else if(a.datumPocetak>Date())rez.add(a)
                 }
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getFuture(dodatneGrupe: List<Grupa>) : List<Anketa>{
@@ -83,7 +82,7 @@ object AnketaRepository {
                     if(a.datumKraj> Date() && a.datumPocetak<Date() && a.progres<1F && a.datumRada!=null)rez.add(a)
                     else if(a.datumPocetak>Date())rez.add(a)
                 }
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getNotTaken() : List<Anketa>{//prosle(neuradjene) ankete
@@ -93,7 +92,7 @@ object AnketaRepository {
         for(g in GrupaRepository.getUpisani())
             for(a in ankete)
                 if(a.nazivGrupe==g.naziv && a.datumKraj<Date() && a.progres<1F)rez.add(a)
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
     fun getNotTaken(dodatneGrupe: List<Grupa>) : List<Anketa>{
@@ -102,7 +101,7 @@ object AnketaRepository {
         for(g in dodatneGrupe)
             for(a in ankete)
                 if(a.nazivGrupe==g.naziv && a.datumKraj<Date() && a.progres<1F)rez.add(a)
-        rez.sortedBy{it.datumPocetak}.toMutableList()
+        rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
 }

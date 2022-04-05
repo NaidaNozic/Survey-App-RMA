@@ -10,7 +10,7 @@ import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import java.util.*
 
-class AnketaListAdapter(private var ankete: MutableList<Anketa>) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
+class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnketaViewHolder {
         val view = LayoutInflater
@@ -46,7 +46,7 @@ class AnketaListAdapter(private var ankete: MutableList<Anketa>) : RecyclerView.
         if(a.datumKraj> Date() && a.datumPocetak<Date()){
             //anketa je aktivna
             if(a.progres==1F && a.datumRada!=null)plava=1
-            else if(a.progres<1F && a.datumRada!=null)zelena=1
+            else if(a.progres<1F)zelena=1
         }else if(a.datumPocetak>Date())zuta=1
         else if(a.datumKraj<Date() && a.progres<1F)crvena=1
 
@@ -88,12 +88,8 @@ class AnketaListAdapter(private var ankete: MutableList<Anketa>) : RecyclerView.
         holder.stanje.setImageResource(id)
     }
     fun updateAnkete(a: List<Anketa>) {
-        this.ankete = a.toMutableList()
+        this.ankete = a
         notifyDataSetChanged()
-    }
-    fun addAnketu(a:Anketa){
-        this.ankete.add(a)
-        notifyItemInserted(ankete.size - 1);
     }
     inner class AnketaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.naziv)
