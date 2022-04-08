@@ -13,14 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Korisnik
 import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         "Buduće ankete",
         "Prošle ankete"
     )
-    var startForResult = registerForActivityResult(
+    var startActivity1 = registerForActivityResult(
         StartActivityForResult(),
         ActivityResultCallback<ActivityResult> { result ->
             if (result.getResultCode() === RESULT_OK) {
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener{
             val intent = Intent(this, UpisIstrazivanje::class.java)
             intent.putExtra("poruka",korisnik)
-            startForResult.launch(intent)
+            startActivity1.launch(intent)
         }
 
         //spinner
