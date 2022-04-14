@@ -4,13 +4,16 @@ import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 import java.io.Serializable
 
-class Korisnik:Serializable {
-    private var upisanaIstrazivanja=mutableListOf<Istrazivanje>()
-    private var upisaneGrupe= mutableListOf<Grupa>()
+class Korisnik {
 
-    private lateinit var posljednjeOdabranoIstrazivanje:Istrazivanje
-    private lateinit var posljednjeOdabranaGrupa:Grupa
-    private var posljednjaGodina:Int=1
+    companion object CompanionObject {
+         var upisanaIstrazivanja = IstrazivanjeRepository.getUpisani().toMutableList()
+         var upisaneGrupe = GrupaRepository.getUpisani().toMutableList()
+
+         lateinit var posljednjeOdabranoIstrazivanje: Istrazivanje
+         lateinit var posljednjeOdabranaGrupa: Grupa
+         var posljednjaGodina: Int = 1
+    }
 
     fun getPosljednjaGodina():Int{
         return posljednjaGodina
@@ -38,7 +41,7 @@ class Korisnik:Serializable {
     }
     fun setUpisane(lista:List<Istrazivanje>){
         for(i in lista)
-                upisanaIstrazivanja.add(i)
+            upisanaIstrazivanja.add(i)
     }
     fun setupisaneGrupe(lista:List<Grupa>){
         for(i in lista)

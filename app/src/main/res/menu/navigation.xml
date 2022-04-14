@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_ankete"
+        android:icon="@android:drawable/btn_star_big_off"
+        android:title="Ankete"/>
+    <item
+        android:id="@+id/navigation_istrazivanje"
+        android:icon="@android:drawable/btn_star_big_off"
+        android:title="Upis"/>
+</menu>

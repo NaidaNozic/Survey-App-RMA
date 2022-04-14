@@ -87,4 +87,5 @@ object AnketaRepository {
         rez=rez.sortedBy{it.datumPocetak}.toMutableList()
         return rez
     }
+
 }
