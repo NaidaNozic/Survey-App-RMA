@@ -6,15 +6,11 @@ import java.util.*
 class SveAnkete {
     companion object GlobalneAnkete{
         //ove ankete su globalne i mogu im atribute mijenjati
-        var ankete= ankete()
-        var mojeAnkete= myAnkete()
-        var uradjene= doneAnkete()
-        var buduce= futureAnkete()
-        var prosle= notTakenAnkete()
+        var ankete= ankete().toMutableList()
     }
     fun postaviPitanjeIOdabranOdgovor(anketa:String,tekst:String,odabranOdg:String){
-        var anketa1=ankete.find { a->a.naziv==anketa }?.pitanja
-        var pitanje=anketa1?.get(tekst)
+        val anketa1=ankete.find { a->a.naziv==anketa }?.pitanja
+        val pitanje=anketa1?.get(tekst)
         if(pitanje!=null){
             pitanje.add(odabranOdg)
         }else{
@@ -22,7 +18,7 @@ class SveAnkete {
         }
     }
     fun getOdgovore(anketa:String,pitanje:String):MutableList<String>?{
-        var odgovori=ankete.find { a->a.naziv==anketa }?.pitanja?.get(pitanje)
+        val odgovori=ankete.find { a->a.naziv==anketa }?.pitanja?.get(pitanje)
         return odgovori
     }
     fun izmijeniDatumKraj(anketa:String){
@@ -34,16 +30,33 @@ class SveAnkete {
     fun dajSveAnkete():List<Anketa>{
         return ankete
     }
-    fun dajMojeAnkete():List<Anketa>{
-        return mojeAnkete
+    fun dajMojeAnkete():MutableList<Anketa>{
+        val rez= mutableListOf<Anketa>()
+        for(i in Korisnik.upisanaIstrazivanja)
+            for(g in Korisnik.upisaneGrupe)
+                if(g.nazivIstrazivanja==i.naziv)
+                    for(a in ankete)
+                        if(a.nazivIstrazivanja==i.naziv && a.nazivGrupe==g.naziv) rez.add(a)
+        return rez
     }
-    fun dajUradjeneAnkete():List<Anketa>{
-        return uradjene
+    fun dajUradjeneAnkete():MutableList<Anketa>{
+        val rez= mutableListOf<Anketa>()
+        for(a in ankete)
+            if(a.progres==1F && a.datumRada!=null)rez.add(a)
+        return rez
     }
-    fun dajBuduceAnkete():List<Anketa>{
-        return buduce
+    fun dajBuduceAnkete():MutableList<Anketa>{
+        val rez= mutableListOf<Anketa>()
+        for(a in ankete) {
+            if (a.datumPocetak > Date()) rez.add(a)
+            else if(a.datumKraj> Date() && a.datumPocetak<Date() && a.progres<1F)rez.add(a)
+        }
+        return rez
     }
-    fun dajProsleAnkete():List<Anketa>{
-        return prosle
+    fun dajProsleAnkete():MutableList<Anketa>{
+        val rez= mutableListOf<Anketa>()
+        for(a in ankete)
+            if (a.datumKraj<Date() && a.progres<1F)rez.add(a)
+        return rez
     }
 }

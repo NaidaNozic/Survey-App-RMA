@@ -31,5 +31,8 @@ fun pitanjaPoAnketi():List<PitanjeAnketa>{
         PitanjeAnketa("Pitanje 9","Anketa 9"),PitanjeAnketa("Pitanje 2","Anketa 9"),
         PitanjeAnketa("Pitanje 8","Anketa 9"),PitanjeAnketa("Pitanje 7","Anketa 9"),
         PitanjeAnketa("Pitanje 6","Anketa 9"),
-        PitanjeAnketa("Pitanje 10","Anketa 10"))
+        PitanjeAnketa("Pitanje 10","Anketa 10"), PitanjeAnketa("Pitanje 6","Anketa 14"),
+        PitanjeAnketa("Pitanje 10","Anketa 14"), PitanjeAnketa("Pitanje 6","Anketa 15"),
+        PitanjeAnketa("Pitanje 10","Anketa 15"), PitanjeAnketa("Pitanje 6","Anketa 16"),
+        PitanjeAnketa("Pitanje 10","Anketa 16"))
 }

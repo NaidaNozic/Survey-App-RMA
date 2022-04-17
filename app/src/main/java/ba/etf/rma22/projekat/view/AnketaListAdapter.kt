@@ -48,8 +48,9 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
         if(a.datumKraj> Date() && a.datumPocetak<Date()){
             //anketa je aktivna
             if(a.progres==1F && a.datumRada!=null)plava=1
-            else if(a.progres<1F)zelena=1
+             if(a.progres<1F)zelena=1
         }else if(a.datumPocetak>Date())zuta=1
+        else if(a.progres==1F && a.datumRada!=null)plava=1
         else if(a.datumKraj<Date() && a.progres<1F)crvena=1
 
         val context: Context = holder.stanje.getContext()

@@ -1,14 +1,12 @@
 package ba.etf.rma22.projekat.data.repositories
 
-import ba.etf.rma22.projekat.data.*
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Grupa
 import ba.etf.rma22.projekat.data.models.Istrazivanje
 import ba.etf.rma22.projekat.data.models.SveAnkete
-import java.util.*
 
 object AnketaRepository {
-     var svee=SveAnkete()
+    private var svee=SveAnkete()
     fun getAll() : List<Anketa> { //sve ankete
         return svee.dajSveAnkete().sortedBy{it.datumPocetak};
     }
@@ -18,7 +16,7 @@ object AnketaRepository {
         return svee.dajMojeAnkete().toMutableList().sortedBy{it.datumPocetak}
     }
     fun getMyAnkete(dodatnaIstr: List<Istrazivanje>,dodatneGrupe:List<Grupa>) : List<Anketa>{//sve moje ankete
-        var ankete=svee.dajSveAnkete()
+        val ankete=svee.dajSveAnkete()
         var rez= mutableListOf<Anketa>()
 
         for(i in dodatnaIstr)
@@ -33,7 +31,7 @@ object AnketaRepository {
     fun getDone() : List<Anketa>{ //uradjene ankete
         //"ankete unutar korisnikovih grupa koje su urađene"
         //koliko sam ja shvatila to su sve ankete koje su urađene a pripadaju grupi u kojoj je korisnik upisan
-        var ankete= svee.dajUradjeneAnkete()
+        val ankete= svee.dajUradjeneAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in GrupaRepository.getUpisani())
             for(a in ankete)
@@ -42,7 +40,7 @@ object AnketaRepository {
         return rez
     }
     fun getDone(dodatne:List<Grupa>) : List<Anketa>{
-        var ankete= svee.dajUradjeneAnkete()
+        val ankete= svee.dajUradjeneAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in dodatne)
             for(a in ankete)
@@ -52,7 +50,7 @@ object AnketaRepository {
     }
     fun getFuture() : List<Anketa>{//buduce ankete
         //to su zelene i zute ankete sa grupama u kojima je korisnik upisan
-        var ankete= svee.dajBuduceAnkete()
+        val ankete= svee.dajBuduceAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in GrupaRepository.getUpisani())
             for(a in ankete)
@@ -62,7 +60,7 @@ object AnketaRepository {
         return rez
     }
     fun getFuture(dodatneGrupe: List<Grupa>) : List<Anketa>{
-        var ankete= svee.dajBuduceAnkete()
+        val ankete= svee.dajBuduceAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in dodatneGrupe)
             for(a in ankete)
@@ -72,7 +70,7 @@ object AnketaRepository {
     }
     fun getNotTaken() : List<Anketa>{//prosle(neuradjene) ankete
         //crvene ankete sa grupama u kojima je korisnik upisan
-        var ankete= svee.dajProsleAnkete()
+        val ankete= svee.dajProsleAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in GrupaRepository.getUpisani())
             for(a in ankete)
@@ -81,7 +79,7 @@ object AnketaRepository {
         return rez
     }
     fun getNotTaken(dodatneGrupe: List<Grupa>) : List<Anketa>{
-        var ankete= svee.dajProsleAnkete()
+        val ankete= svee.dajProsleAnkete()
         var rez= mutableListOf<Anketa>()
         for(g in dodatneGrupe)
             for(a in ankete)

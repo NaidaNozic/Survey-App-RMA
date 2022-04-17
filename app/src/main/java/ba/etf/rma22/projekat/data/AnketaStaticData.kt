@@ -57,7 +57,7 @@ fun ankete(): List<Anketa> {
         Anketa("Anketa 10","Istraživanje broj 3", //plava
             dat4,dat10,dat6, 4,"Grupa 10",1F),
         Anketa("Anketa 14","Istraživanje broj 3", //zuta
-            dat4,dat10,null, 34,"Grupa 9",0.0F),
+            dat4,dat10,dat6, 34,"Grupa 9",0.0F),
         Anketa("Anketa 15","Istraživanje broj 3", //zuta
             dat7,dat10,dat7, 34,"Grupa 10",1F),
         Anketa("Anketa 16","Istraživanje broj 1", //zelena

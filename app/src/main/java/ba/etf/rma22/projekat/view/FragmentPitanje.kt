@@ -48,11 +48,30 @@ class FragmentPitanje: Fragment() {
 
         button.setOnClickListener{
             sm = activity as PomocniInterfejs
+            //izmijeniti progres
+            var progres=(bundle?.getSerializable("anketa") as Anketa).pitanja.size.toFloat()/(sm.getItemCount()-1)//racunam novi progres
+            progres=zaokruziProgres(progres)
+            SveAnkete().izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
             sm.izmijeniFragmente()
         }
         return view
     }
     companion object {
         fun newInstance(): FragmentPitanje = FragmentPitanje()
+    }
+    private fun zaokruziProgres(progres:Float):Float{
+        var rez:Float=progres
+        if(progres>0 && progres<0.2){
+            if(0F+0.1<progres) rez=0.2F else rez=0F
+        }else if(progres>0.2 && progres<0.4){
+            if(0.2+0.1<progres) rez=0.4F else rez=0.2F
+        }else if(progres>0.4 && progres<0.6){
+            if(0.4+0.1<progres) rez=0.6F else rez=0.4F
+        }else if(progres>0.6 && progres<0.8){
+            if(0.6+0.1<progres) rez=0.8F else rez=0.6F
+        }else if(progres>0.8 && progres<1){
+            if(0.8+0.1<progres) rez=1F else rez=0.8F
+        }
+        return rez
     }
 }
