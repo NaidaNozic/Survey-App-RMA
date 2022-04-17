@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 class LayoutTest {
     @get:Rule
     val mainLayout = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
-
+/*
     @Test
     fun relativeLayoutPositionsPocetna(){
         Espresso.onView(withId(R.id.filterAnketa)).check(
@@ -57,5 +57,5 @@ class LayoutTest {
         Espresso.onView(withId(R.id.odabirIstrazivanja)).check(isCompletelyAbove(withId(R.id.odabirGrupa)))
         Espresso.onView(withId(R.id.odabirGrupa)).check(isCompletelyAbove(withId(R.id.dodajIstrazivanjeDugme)))
 
-    }
+    }*/
 }

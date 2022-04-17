@@ -25,7 +25,7 @@ import org.hamcrest.CoreMatchers.`is` as Is
 class PocetniTest {
     @get:Rule
     val intentsTestRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
-
+/*
     @Test
     fun postojiSveNaPocetnoj() { //prolazi
 
@@ -103,5 +103,5 @@ class PocetniTest {
         val ukupno = AnketaRepository.getAll().size
         kolikoAnketa-=ukupno
         assertThat(kolikoAnketa, allOf(Is(greaterThan(0))))
-    }
+    }*/
 }

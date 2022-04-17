@@ -1,4 +1,4 @@
-package ba.etf.rma22.projekat
+package ba.etf.rma22.projekat.view
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -25,10 +25,6 @@ class ViewPageAdapter(val items:ArrayList<Fragment>,activity: AppCompatActivity)
     fun remove(index: Int) {
         items.removeAt(index)
         notifyItemChanged(index)
-    }
-    fun addFragment(fragment: Fragment){
-        remove(1)
-        items.add(fragment)
     }
 
     override fun getItemId(position: Int): Long {

@@ -10,7 +10,9 @@ import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import java.util.*
 
-class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
+class AnketaListAdapter(private var ankete: List<Anketa>,
+                        private val onItemClicked: (anketa:Anketa) -> Unit
+) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnketaViewHolder {
         val view = LayoutInflater
@@ -86,6 +88,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>) : RecyclerView.Adapter
         val dan=calendar.get(Calendar.DAY_OF_MONTH)
         holder.datum1.text=dan.toString()+"."+mjesec+"."+god.toString()
         holder.stanje.setImageResource(id)
+        holder.itemView.setOnClickListener{ onItemClicked(ankete[position]) }//ovo se desava kada se klikne na anketu
     }
     fun updateAnkete(a: List<Anketa>) {
         this.ankete = a
