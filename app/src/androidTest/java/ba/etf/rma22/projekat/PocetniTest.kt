@@ -49,7 +49,6 @@ class PocetniTest {
         for (anketa in ankete) {
             itemTest(R.id.listaAnketa, anketa)
         }
-
     }
 
     @Test

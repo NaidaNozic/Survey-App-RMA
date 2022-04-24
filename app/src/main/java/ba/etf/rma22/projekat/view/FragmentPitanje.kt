@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
 import java.util.*
 
 
@@ -40,7 +41,7 @@ class FragmentPitanje: Fragment() {
                 listt[i]=listItems[i]
             }
         }
-        prijasnjiOdgovori=SveAnkete().getOdgovore(anketa.naziv,anketa.nazivIstrazivanja,pitanje.text.toString())
+        prijasnjiOdgovori=SveAnketeRepository.getOdgovore(anketa.naziv,anketa.nazivIstrazivanja,pitanje.text.toString())
 
         val adapter=ListViewAdapter(view.context, R.layout.list_item,listt,this)
             odgovori.adapter = adapter
@@ -53,7 +54,7 @@ class FragmentPitanje: Fragment() {
                 var progres =
                     anketa.pitanja.size.toFloat() / (sm.getItemCount() - 1)//racunam novi progres
                 progres = zaokruziProgres(progres)
-                SveAnkete().izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
+                SveAnketeRepository.izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
             }
             sm.izmijeniFragmente()
         }

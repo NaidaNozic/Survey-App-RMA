@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
 import java.util.*
 
 
@@ -29,9 +30,9 @@ class ListViewAdapter(
         if(fragment.anketa.datumRada==null && fragment.anketa.datumKraj> Date())
         view.setOnClickListener{
             //korisnik ne moze mijenjati odgovore na vec odgovorena pitanja
-            if(SveAnkete().getOdgovore(fragment.anketa.naziv,fragment.anketa.nazivIstrazivanja,fragment.pitanje.text.toString())==null) {
+            if(SveAnketeRepository.getOdgovore(fragment.anketa.naziv,fragment.anketa.nazivIstrazivanja,fragment.pitanje.text.toString())==null) {
                 tw.setTextColor(Color.parseColor("#0000FF"))
-                SveAnkete().postaviPitanjeIOdabranOdgovor(
+                SveAnketeRepository.postaviPitanjeIOdabranOdgovor(
                     fragment.anketa.naziv, fragment.anketa.nazivIstrazivanja,
                     fragment.pitanje.text.toString(), tw.text.toString()
                 )

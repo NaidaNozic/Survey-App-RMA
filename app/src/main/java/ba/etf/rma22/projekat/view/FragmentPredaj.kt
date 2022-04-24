@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
 import java.util.*
 
 class FragmentPredaj: Fragment() {
@@ -36,8 +37,8 @@ class FragmentPredaj: Fragment() {
 
         button.setOnClickListener {
 
-                SveAnkete().izmijeniProgres(a.naziv, a.nazivIstrazivanja, progres)
-                SveAnkete().izmijeniDatumRada(a.naziv,a.nazivIstrazivanja)//postavlja datum na danasnji (anketa postaje zavrsena)
+                SveAnketeRepository.izmijeniProgres(a.naziv, a.nazivIstrazivanja, progres)
+                SveAnketeRepository.izmijeniDatumRada(a.naziv,a.nazivIstrazivanja)//postavlja datum na danasnji (anketa postaje zavrsena)
 
                 sm.passDataAndGoToPoruka("Završili ste anketu "+a.naziv+" u okviru istraživanja " +a.nazivIstrazivanja)
 
