@@ -11,13 +11,13 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import ba.etf.rma22.projekat.PomocniInterfejs
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Korisnik
 import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
+import java.util.*
 
 
 class FragmentAnkete : Fragment(){
@@ -28,7 +28,7 @@ class FragmentAnkete : Fragment(){
     private var korisnik= Korisnik()
     private lateinit var sm: PomocniInterfejs
 
-    lateinit var istrazivanje: String
+   // lateinit var istrazivanje: String
     private var elementiSpinnera = arrayOf(
         "Sve moje ankete",
         "Sve ankete",
@@ -40,7 +40,7 @@ class FragmentAnkete : Fragment(){
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
 
-        istrazivanje="Prazno"
+      //  istrazivanje="Prazno"
 
         //spinner
         spinner=view.findViewById(R.id.filterAnketa)
@@ -86,7 +86,11 @@ class FragmentAnkete : Fragment(){
         }
     }
     private fun showAnketa(anketa: Anketa){
-        val p=PitanjeAnketaRepository().getPitanja(anketa.naziv,anketa.nazivIstrazivanja)
+        //buduce ankete ne moze otvoriti
+        if(anketa.datumPocetak> Date())return
+        //samo ankete na koje je upisan moze otvoriti
+        if(!AnketaRepository.getMyAnkete().contains(anketa))return
+        val p=PitanjeAnketaRepository.getPitanja(anketa.naziv,anketa.nazivIstrazivanja)
 
         sm = activity as PomocniInterfejs
         sm.openPitanja(p,anketa)

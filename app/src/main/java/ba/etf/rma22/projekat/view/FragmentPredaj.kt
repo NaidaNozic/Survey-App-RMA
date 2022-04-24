@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import ba.etf.rma22.projekat.PomocniInterfejs
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import java.util.*
 
 class FragmentPredaj: Fragment() {
     private lateinit var text:TextView
@@ -21,21 +21,25 @@ class FragmentPredaj: Fragment() {
         val view = inflater.inflate(R.layout.fragment_predaj, container, false)
         text=view.findViewById(R.id.progresTekst)
         button=view.findViewById(R.id.dugmePredaj)
+        val bundle=arguments
+
+        val a=bundle?.getSerializable("anketa") as Anketa
+        //prosla anketa se ne moze predati
+        if(a.datumKraj<Date() && a.progres<1F) button.isEnabled=false
+        //prethodno zavrsena anketa se takodjer ne moze predati
+        if(a.datumRada!=null) button.isEnabled=false
 
         sm = activity as PomocniInterfejs
-        val bundle=arguments
-        var progres=(bundle?.getSerializable("anketa") as Anketa).pitanja.size.toFloat()/(sm.getItemCount()-1)//racunam novi progres
-            progres=zaokruziProgres(progres)
-            text.text=(progres*100).toString().split(".")[0]+"%"
+        var progres=a.pitanja.size.toFloat()/(sm.getItemCount()-1)//racunam novi progres
+        progres=zaokruziProgres(progres)
+        text.text=(progres*100).toString().split(".")[0]+"%"
 
         button.setOnClickListener {
-            val anketa: Anketa?
 
-                anketa = (bundle.getSerializable("anketa") as Anketa)
-                SveAnkete().izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
-                SveAnkete().izmijeniDatumKraj(anketa.naziv)//postavlja datum na danasnji (anketa postaje zavrsena)
+                SveAnkete().izmijeniProgres(a.naziv, a.nazivIstrazivanja, progres)
+                SveAnkete().izmijeniDatumRada(a.naziv,a.nazivIstrazivanja)//postavlja datum na danasnji (anketa postaje zavrsena)
 
-                sm.passDataAndGoToPoruka("Završili ste anketu "+anketa.naziv+" u okviru istraživanja " +anketa.nazivIstrazivanja)
+                sm.passDataAndGoToPoruka("Završili ste anketu "+a.naziv+" u okviru istraživanja " +a.nazivIstrazivanja)
 
         }
         return view

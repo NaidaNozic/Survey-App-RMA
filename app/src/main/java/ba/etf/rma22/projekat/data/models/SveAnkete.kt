@@ -8,8 +8,8 @@ class SveAnkete {
         //ove ankete su globalne i mogu im atribute mijenjati
         var ankete= ankete().toMutableList()
     }
-    fun postaviPitanjeIOdabranOdgovor(anketa:String,tekst:String,odabranOdg:String){
-        val anketa1=ankete.find { a->a.naziv==anketa }?.pitanja
+    fun postaviPitanjeIOdabranOdgovor(anketa:String,istrazivanje: String,tekst:String,odabranOdg:String){
+        val anketa1=ankete.find { a->a.naziv==anketa && a.nazivIstrazivanja==istrazivanje}?.pitanja
         val pitanje=anketa1?.get(tekst)
         if(pitanje!=null){
             pitanje.add(odabranOdg)
@@ -17,12 +17,12 @@ class SveAnkete {
             anketa1?.put(tekst, mutableListOf(odabranOdg))
         }
     }
-    fun getOdgovore(anketa:String,pitanje:String):MutableList<String>?{
-        val odgovori=ankete.find { a->a.naziv==anketa }?.pitanja?.get(pitanje)
+    fun getOdgovore(anketa:String,istrazivanje:String,pitanje:String):MutableList<String>?{
+        val odgovori=ankete.find { a->a.naziv==anketa && a.nazivIstrazivanja==istrazivanje }?.pitanja?.get(pitanje)
         return odgovori
     }
-    fun izmijeniDatumKraj(anketa:String){
-        ankete.find { a->a.naziv==anketa }?.datumKraj= Date()
+    fun izmijeniDatumRada(anketa:String,istrazivanje:String){
+        ankete.find { a->a.naziv==anketa && a.nazivIstrazivanja==istrazivanje }?.datumRada= Date()
     }
     fun izmijeniProgres(anketa:String,istrazivanje:String,progres:Float){
         ankete.find { a->a.naziv==anketa && a.nazivIstrazivanja==istrazivanje }?.progres=progres
@@ -42,7 +42,7 @@ class SveAnkete {
     fun dajUradjeneAnkete():MutableList<Anketa>{
         val rez= mutableListOf<Anketa>()
         for(a in ankete)
-            if(a.progres==1F && a.datumRada!=null)rez.add(a)
+            if(a.progres==1F && a.datumRada != null)rez.add(a)
         return rez
     }
     fun dajBuduceAnkete():MutableList<Anketa>{

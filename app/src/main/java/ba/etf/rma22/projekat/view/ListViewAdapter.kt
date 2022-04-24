@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import java.util.*
 
 
 class ListViewAdapter(
@@ -24,9 +25,17 @@ class ListViewAdapter(
 
         val tw=view.findViewById<TextView>(R.id.odgovor)
         tw.text=items[position]
+        //ako je anketa od prije vec predana (datumRada!=null) onda se ne mogu mijenjati odgovori
+        if(fragment.anketa.datumRada==null && fragment.anketa.datumKraj> Date())
         view.setOnClickListener{
-            tw.setTextColor(Color.parseColor("#0000FF"))
-            SveAnkete().postaviPitanjeIOdabranOdgovor(fragment.anketa.naziv,fragment.pitanje.text.toString(),tw.text.toString())
+            //korisnik ne moze mijenjati odgovore na vec odgovorena pitanja
+            if(SveAnkete().getOdgovore(fragment.anketa.naziv,fragment.anketa.nazivIstrazivanja,fragment.pitanje.text.toString())==null) {
+                tw.setTextColor(Color.parseColor("#0000FF"))
+                SveAnkete().postaviPitanjeIOdabranOdgovor(
+                    fragment.anketa.naziv, fragment.anketa.nazivIstrazivanja,
+                    fragment.pitanje.text.toString(), tw.text.toString()
+                )
+            }
         }
         if(fragment.prijasnjiOdgovori?.find { o->o==tw.text }!=null){
             tw.setTextColor(Color.parseColor("#0000FF"))

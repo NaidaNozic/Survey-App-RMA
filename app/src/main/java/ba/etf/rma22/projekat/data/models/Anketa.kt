@@ -8,9 +8,10 @@ data class Anketa (
     val nazivIstrazivanja: String,
     val datumPocetak: Date,
     var datumKraj: Date,
-    val datumRada: Date?,
+    var datumRada: Date?,
     val trajanje: Int,
     val nazivGrupe: String,
     var progres: Float,
-    var pitanja:MutableMap<String,MutableList<String>> = mutableMapOf()//kljuc je tekst pitanja
+    var pitanja:MutableMap<String,MutableList<String>> = mutableMapOf(),//kljuc je tekst pitanja
+    var stariProgres:Float =progres
 ):Serializable

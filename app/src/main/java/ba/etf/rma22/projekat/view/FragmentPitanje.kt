@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import ba.etf.rma22.projekat.PomocniInterfejs
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import java.util.*
 
 
 class FragmentPitanje: Fragment() {
@@ -40,7 +40,7 @@ class FragmentPitanje: Fragment() {
                 listt[i]=listItems[i]
             }
         }
-        prijasnjiOdgovori=SveAnkete().getOdgovore(anketa.naziv,pitanje.text.toString())
+        prijasnjiOdgovori=SveAnkete().getOdgovore(anketa.naziv,anketa.nazivIstrazivanja,pitanje.text.toString())
 
         val adapter=ListViewAdapter(view.context, R.layout.list_item,listt,this)
             odgovori.adapter = adapter
@@ -49,9 +49,12 @@ class FragmentPitanje: Fragment() {
         button.setOnClickListener{
             sm = activity as PomocniInterfejs
             //izmijeniti progres
-            var progres=(bundle?.getSerializable("anketa") as Anketa).pitanja.size.toFloat()/(sm.getItemCount()-1)//racunam novi progres
-            progres=zaokruziProgres(progres)
-            SveAnkete().izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
+            if(anketa.datumRada==null && anketa.datumKraj> Date()) {
+                var progres =
+                    anketa.pitanja.size.toFloat() / (sm.getItemCount() - 1)//racunam novi progres
+                progres = zaokruziProgres(progres)
+                SveAnkete().izmijeniProgres(anketa.naziv, anketa.nazivIstrazivanja, progres)
+            }
             sm.izmijeniFragmente()
         }
         return view

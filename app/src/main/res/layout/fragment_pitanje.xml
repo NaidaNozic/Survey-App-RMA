@@ -13,7 +13,8 @@
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TextView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/odgovoriLista"></TextView>
 
     <ListView
         android:id="@+id/odgovoriLista"
@@ -32,15 +33,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></Button>
-
-   <!-- <TextView
-        android:id="@+id/testni"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="odgovor"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></TextView>
-        -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

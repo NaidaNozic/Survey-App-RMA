@@ -1,4 +1,4 @@
-package ba.etf.rma22.projekat
+package ba.etf.rma22.projekat.view
 
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Pitanje

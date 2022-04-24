@@ -9,8 +9,7 @@ import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.view.*
 
 
-class MainActivity : AppCompatActivity() ,PomocniInterfejs{
-    // private lateinit var bottomNavigation: BottomNavigationView
+class MainActivity : AppCompatActivity() , PomocniInterfejs {
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPageAdapter
 
@@ -18,7 +17,7 @@ class MainActivity : AppCompatActivity() ,PomocniInterfejs{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.pager)
         val fragments = arrayListOf(FragmentAnkete(), FragmentIstrazivanje())
         adapter = ViewPageAdapter(fragments, this)
         viewPager.adapter = adapter
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() ,PomocniInterfejs{
         })
     }
     override fun izmijeniFragmente() {
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.pager)
         adapter.refreshFragment(0, FragmentAnkete())
         adapter.refreshFragment(1, FragmentIstrazivanje())
         viewPager.adapter = adapter
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() ,PomocniInterfejs{
     }
 
     override fun izmijeniSaFragmentPorukom() {
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.pager)
         adapter.refreshFragment(0, FragmentAnkete())
         adapter.refreshFragment(1, FragmentPoruka())
         viewPager.adapter = adapter
@@ -56,9 +55,14 @@ class MainActivity : AppCompatActivity() ,PomocniInterfejs{
         var fragmentPoruka:Fragment = FragmentPoruka()
         fragmentPoruka.arguments=bundle
 
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.pager)
         adapter.refreshFragment(0, FragmentAnkete())
         adapter.refreshFragment(1,fragmentPoruka)
+        //ostale obrisati
+        var i=2
+        while(i<adapter.itemCount){
+            adapter.remove(i)
+        }
         viewPager.adapter = adapter
         viewPager.currentItem=1
     }
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity() ,PomocniInterfejs{
             f.arguments=bundle
             fragments.add(f)
         }
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.pager)
         adapter= ViewPageAdapter(arrayListOf(FragmentAnkete(), FragmentIstrazivanje()),this)
         adapter.refreshFragment(0,fragments.get(0))
         adapter.refreshFragment(1,fragments.get(1))
