@@ -12,6 +12,7 @@ import ba.etf.rma22.projekat.view.*
 class MainActivity : AppCompatActivity() , PomocniInterfejs {
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPageAdapter
+    private lateinit var fragmentPredaj: FragmentPredaj
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
                     0 -> {
                         if(adapter.createFragment(0) is FragmentAnkete)adapter.refreshFragment(1, FragmentIstrazivanje())
                     }
+                }
+                if(adapter.createFragment(0) is FragmentPitanje && position!=adapter.itemCount-1){
+                    adapter.refreshFragment(adapter.itemCount-1,fragmentPredaj)
                 }
             }
         })
@@ -73,8 +77,10 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
             val bundle=Bundle()
             val f:Fragment
             if(i==p.size)  {
-                f= FragmentPredaj()
+                fragmentPredaj= FragmentPredaj()
                 bundle.putSerializable("anketa",anketa)
+                fragmentPredaj.arguments=bundle
+                fragments.add(fragmentPredaj)
             }else {
                 f= FragmentPitanje()
                 bundle.putSerializable("anketa",anketa)
@@ -82,9 +88,9 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
                 val opcije:ArrayList<String> = arrayListOf()
                 opcije.addAll(p[i].opcije)
                 bundle.putStringArrayList("odgovori",opcije)
+                f.arguments=bundle
+                fragments.add(f)
             }
-            f.arguments=bundle
-            fragments.add(f)
         }
         viewPager = findViewById(R.id.pager)
         adapter= ViewPageAdapter(arrayListOf(FragmentAnkete(), FragmentIstrazivanje()),this)
