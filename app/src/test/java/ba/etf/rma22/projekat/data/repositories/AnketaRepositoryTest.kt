@@ -29,33 +29,40 @@ class AnketaRepositoryTest {
         var cal: Calendar = Calendar.getInstance()
 
         cal.set(2018,3,10)
-        var dat4: Date = cal.time;
+        var dat4: Date = cal.time
 
         cal.set(2018,4,10)
-        var dat5: Date = cal.time;
+        var dat5: Date = cal.time
 
         cal.set(2018,5,13)
-        var dat6: Date = cal.time;
+        var dat6: Date = cal.time
         //
         cal.set(2023,2,10)
-        var dat7: Date = cal.time;
+        var dat7: Date = cal.time
 
         cal.set(2023,4,10)
-        var dat8: Date = cal.time;
+        var dat8: Date = cal.time
 
         cal.set(2022,7,13)
-        var dat10: Date = cal.time;
+        var dat10: Date = cal.time
+        cal.set(2021,3,10)
+        var dat1: Date = cal.time
+
+        cal.set(2021,4,10)
+        var dat2: Date = cal.time
         var ocekivano=listOf(
+            Anketa("Anketa 14","Istraživanje broj 3", //zuta
+                dat4,dat10,null, 34,"Grupa 9",0.3F),
             Anketa("Anketa 9","Istraživanje broj 3",
             dat4,dat10,dat6, 34,"Grupa 9",1F),
             Anketa("Anketa 3","Istraživanje broj 2",
             dat4,dat5,dat6, 34,"Grupa 3",0.9F),
             Anketa("Anketa 4","Istraživanje broj 2",
             dat4,dat5,dat6,4,"Grupa 4",0.8F),
+            Anketa("Anketa 1","Istraživanje broj 2", //crvena
+            dat1,dat2,null,30,"Grupa 3",0.6F),
             Anketa("Anketa 8","Istraživanje broj 4",
-            dat7,dat8,dat8, 56,"Grupa 8",0.4F),
-            Anketa("Anketa 14","Istraživanje broj 3", //zuta
-                dat4,dat10,null, 34,"Grupa 9",0.3F)).toMutableList().
+            dat7,dat8,dat8, 56,"Grupa 8",0.4F)).toMutableList().
         map { o->o.nazivIstrazivanja+" "+o.nazivGrupe }
 
         var dobijene=AnketaRepository.getMyAnkete().toMutableList().map { d->d.nazivIstrazivanja+" "+d.nazivGrupe }
@@ -206,14 +213,21 @@ class AnketaRepositoryTest {
         var dat5: Date = cal.time;
 
         cal.set(2018,3,13)
-        var dat6: Date = cal.time;
+        var dat6: Date = cal.time
+        cal.set(2021,3,10)
+        var dat1: Date = cal.time
+
+        cal.set(2021,4,10)
+        var dat2: Date = cal.time
 
         var dobijene=AnketaRepository.getNotTaken().toMutableList().map { d->d.nazivIstrazivanja+" "+d.nazivGrupe }
 
         var ocekivane=listOf(Anketa("Anketa 3","Istraživanje broj 2",
             dat4,dat5,dat6, 34,"Grupa 3",0.9F),
             Anketa("Anketa 4","Istraživanje broj 2",
-            dat4,dat5,dat6,4,"Grupa 4",0.8F)
+            dat4,dat5,dat6,4,"Grupa 4",0.8F),
+            Anketa("Anketa 1","Istraživanje broj 2",
+            dat1,dat2,null,30,"Grupa 3",0.6F)
         ).toMutableList().map { o->o.nazivIstrazivanja+" "+o.nazivGrupe }
 
         assertTrue(ocekivane.size==dobijene.size)
@@ -231,7 +245,12 @@ class AnketaRepositoryTest {
         var dat5: Date = cal.time;
 
         cal.set(2018,3,13)
-        var dat6: Date = cal.time;
+        var dat6: Date = cal.time
+        cal.set(2021,3,10)
+        var dat1: Date = cal.time
+
+        cal.set(2021,4,10)
+        var dat2: Date = cal.time
         var grupe = listOf(
             Grupa("Grupa 9", "Istraživanje broj 3"),
             Grupa("Grupa 3", "Istraživanje broj 2"),
@@ -241,7 +260,10 @@ class AnketaRepositoryTest {
         )
         var dobijene = AnketaRepository.getNotTaken(grupe).toMutableList().map {d->d.nazivIstrazivanja+" "+d.nazivGrupe }
 
-        var ocekivane= listOf(Anketa("Anketa 4","Istraživanje broj 2",
+        var ocekivane= listOf(
+            Anketa("Anketa 1","Istraživanje broj 2", //crvena
+                dat1,dat2,null,30,"Grupa 3",0.6F),
+                Anketa("Anketa 4","Istraživanje broj 2",
             dat4,dat5,dat6,4,"Grupa 4",0.8F),
             Anketa("Anketa 5","Istraživanje broj 5",
                 dat4,dat5,dat6, 7,"Grupa 5",0.3F),

@@ -107,9 +107,8 @@ class MySpirala2AndroidTest {
         assert(anketa?.progres.toString()=="1.0")
 
         //test fragmentPoruka
-        onView(withId(R.id.tvPoruka))
+       onView(withId(R.id.tvPoruka))
             .check(matches(hasValueEqualTo("Završili ste anketu Anketa 14 u okviru istraživanja Istraživanje broj 3")))
-
         onView(withId(R.id.pager)).perform(ViewPager2Actions.scrollToPosition(0))
     }
 

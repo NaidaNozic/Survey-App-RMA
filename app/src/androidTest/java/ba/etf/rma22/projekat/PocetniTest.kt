@@ -36,7 +36,6 @@ class PocetniTest {
             onView(withId(R.id.filterAnketa)).perform(click())
             onData(allOf(Is(instanceOf(String::class.java)), Is(odabir))).perform(click())
         }
-
     }
 
     @Test
