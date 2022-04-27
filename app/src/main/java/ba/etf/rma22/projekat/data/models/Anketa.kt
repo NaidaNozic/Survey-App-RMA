@@ -12,6 +12,5 @@ data class Anketa (
     val trajanje: Int,
     val nazivGrupe: String,
     var progres: Float,
-    var pitanja:MutableMap<String,MutableList<String>> = mutableMapOf(),//kljuc je tekst pitanja
-    var stariProgres:Float =progres
+    var pitanja:MutableMap<String,MutableList<String>> = mutableMapOf()//kljuc je tekst pitanja
 ):Serializable

@@ -47,19 +47,16 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
         var zuta=0
 
         if(a.datumRada!=null){
+            //ako smo uradili anketu i predali (datumRada!=null && status=plav)
+                plava=1
+        }else{
+            //ako anketa nije zavrsena( predata )
             if(a.progres==1F && a.datumRada != null)plava=1
             else if (a.datumKraj > Date() && a.datumPocetak < Date()) {
                 //anketa je aktivna
                 if (a.progres < 1F) zelena = 1
             } else if (a.datumPocetak > Date()) zuta = 1
             else if (a.datumKraj < Date() && a.progres < 1F) crvena = 1
-        }else{
-            if(a.stariProgres==1F && a.datumRada != null)plava=1
-            else if (a.datumKraj > Date() && a.datumPocetak < Date()) {
-                //anketa je aktivna
-                if (a.stariProgres < 1F) zelena = 1
-            } else if (a.datumPocetak > Date()) zuta = 1
-            else if (a.datumKraj < Date() && a.stariProgres < 1F) crvena = 1
         }
 
         val context: Context = holder.stanje.getContext()

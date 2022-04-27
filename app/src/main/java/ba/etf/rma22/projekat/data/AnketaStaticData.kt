@@ -6,34 +6,28 @@ import java.util.*
 fun ankete(): List<Anketa> {
     var cal: Calendar = Calendar.getInstance()
     cal.set(2021,3,10)
-    var dat1: Date = cal.time;
+    val dat1: Date = cal.time
 
     cal.set(2021,4,10)
-    var dat2: Date = cal.time;
+    val dat2: Date = cal.time
 
-    cal.set(2021,3,12)
-    var dat3: Date = cal.time;
-    //
     cal.set(2018,3,10)
-    var dat4: Date = cal.time;
+    val dat4: Date = cal.time
 
     cal.set(2018,4,10)
-    var dat5: Date = cal.time;
+    val dat5: Date = cal.time
 
     cal.set(2018,3,13)
-    var dat6: Date = cal.time;
+    val dat6: Date = cal.time
     //
     cal.set(2023,2,10)
-    var dat7: Date = cal.time;
+    val dat7: Date = cal.time
 
     cal.set(2023,4,10)
-    var dat8: Date = cal.time;
-
-    cal.set(2023,3,13)
-    var dat9: Date = cal.time;
+    val dat8: Date = cal.time
 
     cal.set(2022,7,13)
-    var dat10: Date = cal.time;
+    val dat10: Date = cal.time
     //jedna anketa po grupi
     return listOf(
         Anketa("Anketa 1","Istraživanje broj 1", //crvena

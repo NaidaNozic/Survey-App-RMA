@@ -44,14 +44,14 @@ object SveAnketeRepository {
     fun dajUradjeneAnkete():MutableList<Anketa>{
         val rez= mutableListOf<Anketa>()
         for(a in SveAnkete.ankete)
-            if(a.progres==1F && a.datumRada != null)rez.add(a)
+            if(a.progres==1F || a.datumRada != null)rez.add(a)
         return rez
     }
     fun dajBuduceAnkete():MutableList<Anketa>{
         val rez= mutableListOf<Anketa>()
         for(a in SveAnkete.ankete) {
             if (a.datumPocetak > Date()) rez.add(a)
-            else if(a.datumKraj> Date() && a.datumPocetak< Date() && a.progres<1F)rez.add(a)
+            else if(a.datumKraj> Date() && a.datumPocetak< Date() && a.progres<1F && a.datumRada==null)rez.add(a)
         }
         return rez
     }

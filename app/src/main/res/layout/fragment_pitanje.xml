@@ -13,13 +13,12 @@
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/odgovoriLista"></TextView>
+        app:layout_constraintTop_toTopOf="parent"></TextView>
 
     <ListView
         android:id="@+id/odgovoriLista"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="400dp"
         app:layout_constraintBottom_toTopOf="@+id/dugmeZaustavi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
