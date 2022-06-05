@@ -1,12 +1,8 @@
 package ba.etf.rma22.projekat.data.repositories
 
-import android.util.Log
-import android.widget.Toast
 import ba.etf.rma22.projekat.data.ApiAdapter
 import ba.etf.rma22.projekat.data.models.JsonZaOdgovor
 import ba.etf.rma22.projekat.data.models.Odgovor
-import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
-import ba.etf.rma22.projekat.viewmodel.PitanjaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -28,7 +24,7 @@ object OdgovorRepository {
         var pocete=TakeAnketaRepository.getPoceteAnkete()
         var idAnkete=-1
         if(pocete!=null){
-            idAnkete= pocete.find { p->p.id==idAnketaTaken }?.idAnkete!!
+            idAnkete= pocete.find { p->p.id==idAnketaTaken }?.AnketumId!!
         }
         var o= getOdgovoriAnketa(idAnketaTaken)?.size?.plus(1)
         var o1:Int
@@ -43,7 +39,6 @@ object OdgovorRepository {
             if (anketeTaken != null)
                 return anketeTaken.find { a->a.id==idAnketaTaken }?.progres!!
         } else {
-            Log.d("post Error", "error ne mozee")
         }
         return -1
     }

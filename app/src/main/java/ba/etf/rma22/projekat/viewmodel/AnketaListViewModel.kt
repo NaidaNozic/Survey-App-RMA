@@ -25,7 +25,8 @@ class AnketaListViewModel {
    }
     fun getMyAnkete(onSuccess: (ankete: MutableList<Anketa>) -> Unit, onError: () -> Unit){
         scope.launch{
-            val result = AnketaRepository.getUpisane()
+            var result = AnketaRepository.getUpisane()
+            if(result==null)result= mutableListOf()
             when (result) {
                 is MutableList<Anketa> -> onSuccess?.invoke(result)
                 else-> onError?.invoke()
@@ -76,7 +77,7 @@ class AnketaListViewModel {
         var result:List<AnketaTaken>?
         scope.launch{
             result = TakeAnketaRepository.getPoceteAnkete()
-            if(result?.find { a->a.idAnkete==idAnketa }!=null){
+            if(result?.find { a->a.AnketumId==idAnketa }!=null){
                 onSuccess?.invoke(true)
             }else onSuccess?.invoke(false)
         }

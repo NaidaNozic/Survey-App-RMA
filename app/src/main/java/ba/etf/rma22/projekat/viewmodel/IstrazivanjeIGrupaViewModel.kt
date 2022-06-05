@@ -1,7 +1,5 @@
 package ba.etf.rma22.projekat.viewmodel
 
-import android.util.Log
-import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.Grupa
 import ba.etf.rma22.projekat.data.models.Istrazivanje
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeIGrupaRepository
@@ -39,9 +37,9 @@ class IstrazivanjeIGrupaViewModel {
         }
         return upis
     }
-    fun getUpisaneGrupe(hash:String,onSuccess: (grupe: List<Grupa>) -> Unit, onError: () -> Unit){
+    fun getUpisaneGrupe(onSuccess: (grupe: List<Grupa>) -> Unit, onError: () -> Unit){
         scope.launch{
-            val result=IstrazivanjeIGrupaRepository.getUpisaneGrupe(hash)
+            val result=IstrazivanjeIGrupaRepository.getUpisaneGrupe()
             when (result) {
                 is List<Grupa> -> onSuccess?.invoke(result)
                 else-> onError?.invoke()

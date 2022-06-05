@@ -57,17 +57,15 @@ object IstrazivanjeIGrupaRepository {
         var response = ApiAdapter.retrofit.upisiUGrupu(idGrupa,AccountRepository.acHash)
         val responseBody=response.body()
         if (response.isSuccessful && responseBody != null && responseBody.message.contains("je dodan u grupu")) {
-            Log.d("post response", responseBody.message)
             return true
         } else {
-            Log.d("post Error", "error ne mozee")
         }
         return false
     }
-    suspend fun getUpisaneGrupe(hashStudenta:String):List<Grupa>?{
+    suspend fun getUpisaneGrupe():List<Grupa>?{
         //vraca grupe u koje je student upisan
         return withContext(Dispatchers.IO) {
-            var response = ApiAdapter.retrofit.getUpisaneGrupe(hashStudenta)
+            var response = ApiAdapter.retrofit.getUpisaneGrupe(AccountRepository.getHash())
             val responseBody = response.body()
             return@withContext responseBody
         }

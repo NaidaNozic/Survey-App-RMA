@@ -2,8 +2,6 @@ package ba.etf.rma22.projekat.data.repositories
 
 import ba.etf.rma22.projekat.data.ApiAdapter
 import ba.etf.rma22.projekat.data.models.Pitanje
-import ba.etf.rma22.projekat.data.pitanja
-import ba.etf.rma22.projekat.data.pitanjaPoAnketi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

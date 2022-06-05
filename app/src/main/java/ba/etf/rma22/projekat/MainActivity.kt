@@ -1,16 +1,12 @@
 package ba.etf.rma22.projekat
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
-import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
 import ba.etf.rma22.projekat.view.*
-import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 import kotlinx.coroutines.*
 import java.util.*

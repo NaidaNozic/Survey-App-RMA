@@ -1,7 +1,6 @@
 package ba.etf.rma22.projekat.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,6 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.*
-import ba.etf.rma22.projekat.data.repositories.AccountRepository
-import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -90,8 +87,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val odabrano=parent!!.getItemAtPosition(position).toString()
-                IstrazivanjeIGrupaViewModel().getUpisaneGrupe(AccountRepository.getHash(),
-                    onSuccess = ::onSuccess, onError = ::onError)
+                IstrazivanjeIGrupaViewModel().getUpisaneGrupe(onSuccess = ::onSuccess, onError = ::onError)
                 updateSpinnerGrupe(odabrano)
             }
         }

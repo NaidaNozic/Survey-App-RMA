@@ -9,6 +9,6 @@ data class AnketaTaken(
     @SerializedName("student")val student:String,
     @SerializedName("progres")val progres:Int, //procenat odgovorenih pitanja od 0 do 100
     @SerializedName("datumRada")val datumRada: Date,
-    @SerializedName("AnketumId")val idAnkete: Int=-1,
+    @SerializedName("AnketumId")val AnketumId: Int=-1,
     @SerializedName("message")val message:String=" "
 ):Serializable

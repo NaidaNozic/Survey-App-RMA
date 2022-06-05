@@ -9,14 +9,11 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
-import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
-import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
-import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.*
+
 
 
 class FragmentPitanje: Fragment() {

@@ -2,7 +2,6 @@ package ba.etf.rma22.projekat.view
 
 import AnketaListAdapter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,6 @@ import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
 import ba.etf.rma22.projekat.data.models.Korisnik
 import ba.etf.rma22.projekat.data.models.Pitanje
-import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import ba.etf.rma22.projekat.viewmodel.PitanjaViewModel
@@ -45,8 +43,6 @@ class FragmentAnkete : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
-
-      //  istrazivanje="Prazno"
 
         //spinner
         spinner=view.findViewById(R.id.filterAnketa)
@@ -105,7 +101,7 @@ class FragmentAnkete : Fragment(){
     var zapocetaAnketa:AnketaTaken? =null
         val job=GlobalScope.launch (Dispatchers.IO){
             var result = TakeAnketaRepository.getPoceteAnkete()
-            zapocetaAnketa=result?.find { a->a.idAnkete==anketa.id}
+            zapocetaAnketa=result?.find { a->a.AnketumId==anketa.id}
             if(zapocetaAnketa==null){
                 zapocetaAnketa=TakeAnketaRepository.zapocniAnketu(anketa.id)
             }

@@ -8,13 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toast
 import ba.etf.rma22.projekat.R
-import ba.etf.rma22.projekat.data.models.Pitanje
-import ba.etf.rma22.projekat.data.models.SveAnkete
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
-import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
-import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

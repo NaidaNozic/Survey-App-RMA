@@ -1,5 +1,4 @@
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
 import ba.etf.rma22.projekat.data.models.Odgovor
-import ba.etf.rma22.projekat.data.models.SveAnkete
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
 import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
@@ -45,7 +43,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
             poceteAnkete = TakeAnketaRepository.getPoceteAnkete()!!
         }
         runBlocking { job1.join() }
-        pocetaAnketa=poceteAnkete.find { p->p.idAnkete==a.id }
+        pocetaAnketa=poceteAnkete.find { p->p.AnketumId==a.id }
       /*  val tmp:Int?
 
             tmp= pocetaAnketa?.progres

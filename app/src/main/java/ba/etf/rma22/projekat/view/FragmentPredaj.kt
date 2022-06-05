@@ -10,12 +10,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
-import ba.etf.rma22.projekat.data.models.PomocneAnkete
-import ba.etf.rma22.projekat.data.models.SveAnkete
-import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
-import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
-import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

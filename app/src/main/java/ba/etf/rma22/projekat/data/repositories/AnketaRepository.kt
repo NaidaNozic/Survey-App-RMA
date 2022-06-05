@@ -1,9 +1,7 @@
 package ba.etf.rma22.projekat.data.repositories
 
-import android.util.Log
 import ba.etf.rma22.projekat.data.ApiAdapter
 import ba.etf.rma22.projekat.data.models.Anketa
-import ba.etf.rma22.projekat.data.models.AnketaTaken
 import ba.etf.rma22.projekat.data.models.Odgovor
 import ba.etf.rma22.projekat.data.models.SveAnkete
 import kotlinx.coroutines.*
@@ -12,25 +10,19 @@ import java.util.*
 
 object AnketaRepository {
 
-    suspend fun getAll(): List<Anketa>? { //sve ankete
-        return withContext(Dispatchers.IO) {
-            var response: Response<List<Anketa>>
-            var allAnkete: MutableList<Anketa>? = mutableListOf()
-            var myAnkete= getUpisane()
-            for (g in IstrazivanjeIGrupaRepository.getGrupe()!!) {
-                response = ApiAdapter.retrofit.getAnketeGrupe(g.id)
-                response.body()?.map { a -> a.nazivGrupe = g.naziv }
-                //naci istrazivanje za ovu grupu
-                var i = IstrazivanjeIGrupaRepository.getIstrazivanje(g.idIstrazivanja)
-                //dodijeliti tim anketama naziv istrazivanja
-                if (i != null) response.body()?.map { a -> a.nazivIstrazivanja = i.naziv }
-                response.body()?.let { allAnkete?.addAll(it) }
-            }
-            allAnkete= dodijelitiProgres(allAnkete)
-            if (allAnkete != null) allAnkete = allAnkete.sortedBy { it.datumPocetak }.toMutableList()
-
-            return@withContext allAnkete
+    suspend fun getAll() : List<Anketa> { //sve ankete
+        var a: MutableList<Anketa> =mutableListOf()
+        var a1: MutableList<Anketa>?
+        var i =1
+        while(i>=0){
+            a1= getAll(i)?.toMutableList()
+            if(a1?.size!=0) {
+                a1?.let { a.addAll(it) }
+                i++
+            }else break
         }
+        val result: List<Anketa> =a
+        return result.sortedBy{it.datumPocetak}
     }
         suspend fun getNotTaken(): List<Anketa> {
             var rjesenje: MutableList<Anketa> = mutableListOf()
@@ -59,7 +51,7 @@ object AnketaRepository {
                 if (response != null)
                     for (r in response) {
                         var poceteAnkete = TakeAnketaRepository.getPoceteAnkete()!!
-                        var pocetaAnketa = poceteAnkete.find { p -> p.idAnkete == r.id }
+                        var pocetaAnketa = poceteAnkete.find { p -> p.AnketumId == r.id }
 
                         if (pocetaAnketa != null)
                             odgovori =
@@ -72,6 +64,7 @@ object AnketaRepository {
                             result.add(r)
                         }
                     }
+                if(result==null)return@withContext null
                 return@withContext result
             }
         }
@@ -87,33 +80,16 @@ object AnketaRepository {
                 if (responseBody != null)
                     for (a in responseBody) {
                         var grupe = ApiAdapter.retrofit.getGrupeAnkete(a.id).body()
-                        if (grupe != null)
-                            for (g in grupe) {
-                                val ii =
-                                    IstrazivanjeIGrupaRepository.getIstrazivanje(g.idIstrazivanja)?.naziv
-                                if (ii != null) {
-                                    var anketica = Anketa(
-                                        a.id, a.naziv, ii, a.datumPocetak, a.datumKraj, null,
-                                        a.trajanje, " ", 0, g.naziv
-                                    )
-                                    Log.d(
-                                        "OVOOO:",
-                                        anketica.nazivIstrazivanja + " GRUPA:" + anketica.nazivGrupe
-                                    )
-                                    allAnkete.add(anketica)
-                                }
-                            }
+                        var istrazivanja=grupe?.map { g->IstrazivanjeIGrupaRepository.getIstrazivanje(g.idIstrazivanja)?.naziv}?.distinct()
+                        if(istrazivanja!=null)
+                        for(i in istrazivanja){
+                            if(a.nazivIstrazivanja==null || a.nazivIstrazivanja==" ")
+                                a.nazivIstrazivanja= i.toString()
+                            else a.nazivIstrazivanja=a.nazivIstrazivanja+","+i.toString()
+                        }
+                        allAnkete.add(a)
                     }
-                if (allAnkete != null) {
-                    val iterator = allAnkete.iterator()
-                    while (iterator.hasNext()) {
-                        val item = iterator.next()
-                        if (allAnkete.count { a ->
-                                a.naziv == item.naziv
-                                        && a.nazivIstrazivanja == item.nazivIstrazivanja
-                            } > 1) iterator.remove()
-                    }
-                }
+                allAnkete=dodijeliProgres1(allAnkete)
                 return@withContext allAnkete.sortedBy { it.datumPocetak }
             }
         }
@@ -132,7 +108,7 @@ object AnketaRepository {
             return withContext(Dispatchers.IO) {
                 var response: Response<List<Anketa>>
                 var myAnkete: MutableList<Anketa>? = mutableListOf()
-                for (g in IstrazivanjeIGrupaRepository.getUpisaneGrupe(AccountRepository.getHash())!!) {
+                for (g in IstrazivanjeIGrupaRepository.getUpisaneGrupe()!!) {
                     SveAnkete.upisaneGrupe.add(g.naziv)
                     response = ApiAdapter.retrofit.getAnketeGrupe(g.id)
                     response.body()?.map { a -> a.nazivGrupe = g.naziv }
@@ -156,24 +132,44 @@ object AnketaRepository {
                     }
                 }
                 myAnkete=dodijelitiProgres(myAnkete)
-                if (myAnkete != null) myAnkete =
-                    myAnkete.sortedBy { it.datumPocetak }.toMutableList()
-
+                if (myAnkete != null) myAnkete = myAnkete.sortedBy { it.datumPocetak }.toMutableList()
+                if (myAnkete != null) if(myAnkete.size==0) {
+                    return@withContext null
+                }
                 return@withContext myAnkete
             }
         }
+    suspend fun dodijeliProgres1(ankete:MutableList<Anketa>): MutableList<Anketa> {
+        if (ankete != null) {
+            for(a in ankete){
+                var poceteAnkete = TakeAnketaRepository.getPoceteAnkete()
+                if(poceteAnkete==null){
+                    a.progres=0
+                }
+                else{
+                    var pocetaAnketa = poceteAnkete.find { p -> p.AnketumId == a.id }
+                    if (pocetaAnketa != null) a.progres=pocetaAnketa.progres
+                }
+            }
+        }
+        return ankete
+    }
     suspend fun dodijelitiProgres(ankete:MutableList<Anketa>?):MutableList<Anketa>?{
         if (ankete != null)
             for(a in ankete){
-                var poceteAnkete = TakeAnketaRepository.getPoceteAnkete()!!
-                var pocetaAnketa=poceteAnkete.find { p->p.idAnkete==a.id }
-                val tmp:Int?
-                tmp= pocetaAnketa?.progres
-
-                if(tmp!=null && SveAnkete.upisanaIstrazivanja.find { i->i==a.nazivIstrazivanja }!=null
-                    && SveAnkete.upisaneGrupe.find { g->g==a.nazivGrupe }!=null){
-                    a.progres=tmp
-                }else if(tmp==null)a.progres=0
+                var poceteAnkete = TakeAnketaRepository.getPoceteAnkete()
+                if(poceteAnkete==null){
+                    a.progres=0
+                }
+                else {
+                    var pocetaAnketa = poceteAnkete.find { p -> p.AnketumId == a.id }
+                    val tmp: Int?
+                    tmp = pocetaAnketa?.progres
+                    if(tmp!=null && SveAnkete.upisanaIstrazivanja.find { i->i==a.nazivIstrazivanja }!=null
+                        && SveAnkete.upisaneGrupe.find { g->g==a.nazivGrupe }!=null){
+                        a.progres=tmp
+                    }else if(tmp==null)a.progres=0
+                }
             }
         return ankete
     }
