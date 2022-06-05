@@ -9,39 +9,55 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
+import ba.etf.rma22.projekat.data.models.AnketaTaken
+import ba.etf.rma22.projekat.data.models.PomocneAnkete
 import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.repositories.AnketaRepository
+import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma22.projekat.data.repositories.SveAnketeRepository
+import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class FragmentPredaj: Fragment() {
     private lateinit var text:TextView
     private lateinit var button:Button
     private lateinit var sm: PomocniInterfejs
+    private lateinit var zapocetaAnketa:AnketaTaken
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_predaj, container, false)
-        text=view.findViewById(R.id.progresTekst)
-        button=view.findViewById(R.id.dugmePredaj)
-        val bundle=arguments
+        text = view.findViewById(R.id.progresTekst)
+        button = view.findViewById(R.id.dugmePredaj)
+        val bundle = arguments
+        sm=activity as PomocniInterfejs
 
-        val a=bundle?.getSerializable("anketa") as Anketa
+        val a = bundle?.getSerializable("anketa") as Anketa
+        val zapocetaAnketa = bundle?.getSerializable("zapocetaAnketa") as AnketaTaken
         //prosla anketa se ne moze predati
-        if(a.datumKraj<Date() && a.progres<1F) button.isEnabled=false
+        if(a.datumKraj!=null && a.datumKraj!! <Date() && zapocetaAnketa.progres<1F) button.isEnabled=false
         //prethodno zavrsena anketa se takodjer ne moze predati
-        if(a.datumRada!=null) button.isEnabled=false
+        if(a.datumRada!=null)button.isEnabled=false
+        var brojOdgovorenihPitanja: Int? = 0
 
-        sm = activity as PomocniInterfejs
-        var progres=a.pitanja.size.toFloat()/(sm.getItemCount()-1)//racunam novi progres
-        progres=zaokruziProgres(progres)
-        text.text=(progres*100).toString().split(".")[0]+"%"
+        val job1= GlobalScope.launch (Dispatchers.IO){
+            brojOdgovorenihPitanja = OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.id)?.size
+        }
+        runBlocking { job1.join() }
+
+        var progres: Float
+
+        if (brojOdgovorenihPitanja != null) progres =
+            brojOdgovorenihPitanja!!.toFloat() / (sm.getItemCount() - 1)//racunam novi progres
+        else progres = 0F
+        progres = zaokruziProgres(progres)
+        text.text = (progres * 100).toString().split(".")[0] + "%"
 
         button.setOnClickListener {
-
-                SveAnketeRepository.izmijeniProgres(a.naziv, a.nazivIstrazivanja, progres)
-                SveAnketeRepository.izmijeniDatumRada(a.naziv,a.nazivIstrazivanja)//postavlja datum na danasnji (anketa postaje zavrsena)
-
-                sm.passDataAndGoToPoruka("Završili ste anketu "+a.naziv+" u okviru istraživanja " +a.nazivIstrazivanja)
-
+            sm.passDataAndGoToPoruka("Završili ste anketu " + a.naziv + " u okviru istraživanja " + a.nazivIstrazivanja)
         }
         return view
     }

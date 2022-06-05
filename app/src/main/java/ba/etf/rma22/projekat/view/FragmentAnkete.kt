@@ -2,21 +2,27 @@ package ba.etf.rma22.projekat.view
 
 import AnketaListAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
+import ba.etf.rma22.projekat.data.models.AnketaTaken
 import ba.etf.rma22.projekat.data.models.Korisnik
+import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.data.repositories.AnketaRepository
-import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
+import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
+import ba.etf.rma22.projekat.viewmodel.PitanjaViewModel
+import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -27,8 +33,7 @@ class FragmentAnkete : Fragment(){
     private lateinit var spinner: Spinner
     private var korisnik= Korisnik()
     private lateinit var sm: PomocniInterfejs
-
-   // lateinit var istrazivanje: String
+    private lateinit var anketa:Anketa
     private var elementiSpinnera = arrayOf(
         "Sve moje ankete",
         "Sve ankete",
@@ -36,6 +41,7 @@ class FragmentAnkete : Fragment(){
         "Buduće ankete",
         "Prošle ankete"
     )
+    private var tt:Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
@@ -64,7 +70,7 @@ class FragmentAnkete : Fragment(){
         ankete.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         anketeAdapter = AnketaListAdapter(mutableListOf()) { anketa -> showAnketa(anketa) }
         ankete.adapter = anketeAdapter
-        anketeAdapter.updateAnkete(anketeListViewModel.getAnkete())
+        anketeListViewModel.getMyAnkete( onSuccess = ::onSuccess1, onError = ::onError)
         return view
     }
 
@@ -74,25 +80,53 @@ class FragmentAnkete : Fragment(){
 
     fun promjenaAnketa(o:String){
         if(o=="Sve moje ankete"){
-            anketeAdapter.updateAnkete(AnketaRepository.getMyAnkete(korisnik.getUpisanaIstrazivanja(),korisnik.getupisaneGrupe()))
+            anketeListViewModel.getMyAnkete( onSuccess = ::onSuccess1, onError = ::onError)
         }else if(o=="Sve ankete"){
-            anketeAdapter.updateAnkete(AnketaRepository.getAll())
+            anketeListViewModel.getAnketeByOffset(onSuccess = ::onSuccess1, onError = ::onError)
         }else if(o=="Urađene ankete"){
-            anketeAdapter.updateAnkete(AnketaRepository.getDone(korisnik.getupisaneGrupe()))
+            anketeListViewModel.getDone( onSuccess = ::onSuccess1, onError = ::onError)
         }else if(o=="Buduće ankete"){
-            anketeAdapter.updateAnkete(AnketaRepository.getFuture(korisnik.getupisaneGrupe()))
+            anketeListViewModel.getFuture(onSuccess = ::onSuccess1, onError = ::onError)
         }else if(o=="Prošle ankete"){
-            anketeAdapter.updateAnkete(AnketaRepository.getNotTaken(korisnik.getupisaneGrupe()))
+            anketeListViewModel.getNotTaken(onSuccess = ::onSuccess1, onError = ::onError)
         }
     }
     private fun showAnketa(anketa: Anketa){
         //buduce ankete ne moze otvoriti
         if(anketa.datumPocetak> Date())return
         //samo ankete na koje je upisan moze otvoriti
-        if(!AnketaRepository.getMyAnkete().contains(anketa))return
-        val p=PitanjeAnketaRepository.getPitanja(anketa.naziv,anketa.nazivIstrazivanja)
-
+       // if(!AnketaRepository.getMyAnkete().contains(anketa))return
+       // val p=PitanjeAnketaRepository.getPitanja(anketa.naziv,anketa.nazivIstrazivanja)
+        this.anketa=anketa
         sm = activity as PomocniInterfejs
-        sm.openPitanja(p,anketa)
+        PitanjaViewModel().getPitanjaByAnketa(anketa.id,onSuccess = ::onSuccess, onError = ::onError)
+    }
+    fun onSuccess(pitanja:List<Pitanje>){
+    var zapocetaAnketa:AnketaTaken? =null
+        val job=GlobalScope.launch (Dispatchers.IO){
+            var result = TakeAnketaRepository.getPoceteAnkete()
+            zapocetaAnketa=result?.find { a->a.idAnkete==anketa.id}
+            if(zapocetaAnketa==null){
+                zapocetaAnketa=TakeAnketaRepository.zapocniAnketu(anketa.id)
+            }
+        }
+        runBlocking {
+            job.join()
+        }
+        if(zapocetaAnketa==null) {
+            onError()
+            return
+        }
+        sm.openPitanja(pitanja,anketa,zapocetaAnketa)
+    }
+    fun onError() {
+        val toast = Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    fun onSuccess1(ankete:List<Anketa>){
+        anketeAdapter.updateAnkete(ankete)
+    }
+    fun onSuccess(t:Boolean){
+        tt=t
     }
 }

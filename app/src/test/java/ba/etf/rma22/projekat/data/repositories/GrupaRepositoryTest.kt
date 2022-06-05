@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 
 class GrupaRepositoryTest {
-    private lateinit var upisaneGrupe:List<Grupa>
+  /*  private lateinit var upisaneGrupe:List<Grupa>
 
     @Before
     fun setUp() {
@@ -30,5 +30,5 @@ class GrupaRepositoryTest {
         var lista=GrupaRepository.getUpisani()
         assertTrue(lista.size==upisaneGrupe.size)
         assertTrue(lista.containsAll(upisaneGrupe))
-    }
+    }*/
 }

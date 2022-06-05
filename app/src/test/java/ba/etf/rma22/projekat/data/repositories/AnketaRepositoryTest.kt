@@ -10,8 +10,9 @@ import org.junit.Test
 import java.util.*
 
 class AnketaRepositoryTest {
-
-    @Test
+/*
+  /*  zakomentarisala za spiralu3
+  @Test
     fun getAll() {
         var lista=AnketaRepository.getAll()
        val calendar= Calendar.getInstance()
@@ -22,7 +23,7 @@ class AnketaRepositoryTest {
         calendar.time=lista.get(lista.size-1).datumPocetak
         assertTrue(calendar.get(Calendar.YEAR)==2023 && calendar.get(Calendar.MONTH)==2 &&
                    calendar.get(Calendar.DAY_OF_MONTH)==10)
-    }
+    }*/
 
     @Test
     fun getMyAnkete() {
@@ -273,5 +274,5 @@ class AnketaRepositoryTest {
 
         assertTrue(ocekivane.size==dobijene.size)
         assertTrue(ocekivane.containsAll(dobijene))
-    }
+    }*/
 }

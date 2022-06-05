@@ -1,34 +1,37 @@
 package ba.etf.rma22.projekat.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
-import ba.etf.rma22.projekat.data.models.Grupa
-import ba.etf.rma22.projekat.data.models.Istrazivanje
-import ba.etf.rma22.projekat.data.models.Korisnik
-import ba.etf.rma22.projekat.data.repositories.GrupaRepository
-import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
+import ba.etf.rma22.projekat.data.models.*
+import ba.etf.rma22.projekat.data.repositories.AccountRepository
+import ba.etf.rma22.projekat.data.repositories.AnketaRepository
+import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class FragmentIstrazivanje: Fragment() {
+
+class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje>): Fragment() {
     private lateinit var dodajIstrazivanjeDugme: Button
     private lateinit var spinnerGodine: Spinner
     private lateinit var spinnerIstrazivanja: Spinner
     private lateinit var spinnerGrupe: Spinner
     private var godine = mutableListOf("1","2","3","4","5")
     private var korisnik = Korisnik()
+    private val grupe:MutableList<Grupa> =groups
+    private var upisaneGrupe:MutableList<Grupa> = mutableListOf()
+    private val istrazivanja:MutableList<Istrazivanje> =i
     private lateinit var sm: PomocniInterfejs
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_istrazivanje, container, false)
-
 
         //spinner za godine
         spinnerGodine=view.findViewById(R.id.odabirGodina)
@@ -56,17 +59,16 @@ class FragmentIstrazivanje: Fragment() {
             val year = spinnerGodine.selectedItem.toString()
             val group = spinnerGrupe.selectedItem.toString()
             val istrazivanje = getIstrazivanjeByNameAndYear(name, year)
-            val grupa1 = getGroupByNameAndIstrazivanje(group, name)
-
+            val grupa1 = getIdIstrazivanjaByName(name)?.let { it1 -> getGroupByNameAndIstrazivanje(group, it1) }
 
             if (istrazivanje != null) {
-                korisnik.addIstrazivanja(istrazivanje)
-                korisnik.setPosljednjeOdabranoIstrazivanje(istrazivanje)
-                korisnik.setposljednjaGodina(spinnerGodine.selectedItem.toString().toInt())
             }
             if (grupa1 != null) {
-                korisnik.addGrupu(grupa1)
-                korisnik.setPosljednjeOdabranaGrupa(grupa1)
+                val job= GlobalScope.launch (Dispatchers.IO){
+                    IstrazivanjeIGrupaViewModel().upisiUGrupu(grupa1.id)
+                    //za sada ne znamo sta se desava ako upis ne uspije
+                }
+                runBlocking { job.join() }
             }
             sm = activity as PomocniInterfejs
             sm.passDataAndGoToPoruka("Uspješno ste upisani u grupu "+group+" istraživanja "+istrazivanje?.naziv+"!")
@@ -88,6 +90,8 @@ class FragmentIstrazivanje: Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val odabrano=parent!!.getItemAtPosition(position).toString()
+                IstrazivanjeIGrupaViewModel().getUpisaneGrupe(AccountRepository.getHash(),
+                    onSuccess = ::onSuccess, onError = ::onError)
                 updateSpinnerGrupe(odabrano)
             }
         }
@@ -98,52 +102,66 @@ class FragmentIstrazivanje: Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val odabrano=parent!!.getItemAtPosition(position).toString()
                 if(odabrano=="Odaberite grupu:")  dodajIstrazivanjeDugme.isEnabled = false
-                else   dodajIstrazivanjeDugme.isEnabled = true
+                else dodajIstrazivanjeDugme.isEnabled = true
             }
         }
         return view
     }
     fun updateSpinnerIstrazivanje(odabranaGodina:String){
-        val istrazivanja=korisnik.getNeupisanaIstrazivanja1().toMutableList()
-        istrazivanja.removeAll { i->i.godina!=odabranaGodina.toInt()}
-        val novo=istrazivanja.map { p->p.naziv }.toMutableList()
-        novo.add(0,"Odaberite istraživanje:")
-        if(novo.size==0){
+        var i2:MutableList<Istrazivanje> = mutableListOf()
+        i2.addAll(this.istrazivanja)
+        i2.removeAll { z->z.godina!=odabranaGodina.toInt() }
+        for(z in i2){
+         if(SveAnkete.upisanaIstrazivanja.find { q->q==z.naziv }!=null)i2.remove(z)
+        }
+        var istrazivanje1= i2.map { i->i.naziv }.toMutableList()
+        istrazivanje1.add(0,"Odaberite istraživanje:")
+        if(this.istrazivanja.size==0){
             spinnerIstrazivanja.adapter=null
             spinnerGrupe.adapter=null
         }
         else {
-            val arrayAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, novo)
+            val arrayAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, istrazivanje1)
             arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerIstrazivanja.adapter=arrayAdapter1
         }
     }
     fun updateSpinnerGrupe(odabranoIstr:String){
-        val tmp1:MutableList<String>
+        var grupe1:MutableList<String> = mutableListOf("Odaberite grupu:")
         if(spinnerIstrazivanja.selectedItem.toString()=="Odaberite istraživanje:") {
             dodajIstrazivanjeDugme.isEnabled = false
-            tmp1= mutableListOf("Odaberite grupu:")
         }else {
             dodajIstrazivanjeDugme.isEnabled = true
-            val tmp = korisnik.getGrupePoNeupisanimIstrazivanjima1().toMutableList()
-            tmp.removeAll { g -> korisnik.getupisaneGrupe().contains(g) }
-            tmp.removeAll { g -> g.nazivIstrazivanja != odabranoIstr }
-            tmp1 = tmp.map { g -> g.naziv }.toMutableList()
-            tmp1.add(0, "Odaberite grupu:")
+            var g: MutableList<Grupa> = mutableListOf()
+            g.addAll(this.grupe)
+            g.removeAll { g1 -> g1.idIstrazivanja != getIdIstrazivanjaByName(odabranoIstr) }
+            g.removeAll(upisaneGrupe) //moram dobiti sve grupe u koje nije upisan
+
+            grupe1 = g.map { gg -> gg.naziv }.toMutableList()
+            grupe1.add(0,"Odaberite grupu:")
         }
         spinnerGrupe = requireView().findViewById(R.id.odabirGrupa)
-        val arrayAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tmp1)
+        val arrayAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, grupe1)
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGrupe.adapter=arrayAdapter2
-
+    }
+    private fun getIdIstrazivanjaByName(name:String):Int?{
+        return istrazivanja.find { i->i.naziv==name }?.id
     }
     private fun getIstrazivanjeByNameAndYear(name:String,year:String): Istrazivanje? {
-        return IstrazivanjeRepository.getIstrazivanjeByGodina(Integer.parseInt(year)).find { i->i.naziv==name  }
+        return this.istrazivanja.find { i->i.godina==year.toInt() && i.naziv==name }
     }
-    private fun getGroupByNameAndIstrazivanje(name:String, istrazivanje:String): Grupa?{
-        return GrupaRepository.getGroupsByIstrazivanje(istrazivanje).find { g->g.naziv==name }
+    private fun getGroupByNameAndIstrazivanje(name:String, idIstrazivanja:Int): Grupa?{
+        return this.grupe.find { g->g.naziv==name &&  g.idIstrazivanja==idIstrazivanja}
     }
-    companion object {
-        fun newInstance(): FragmentIstrazivanje = FragmentIstrazivanje()
+    fun onSuccess(grupe:List<Grupa>){
+        this.upisaneGrupe=grupe.toMutableList()
+    }
+    fun returnGrupe(grupe:List<Grupa>):List<Grupa>{
+        return grupe
+    }
+    fun onError() {
+        val toast = Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
+        toast.show()
     }
 }

@@ -9,7 +9,7 @@ import org.junit.Before
 import org.junit.Test
 
 class IstrazivanjeRepositoryTest {
-    private lateinit var svaIstrazivanja:List<Istrazivanje>
+   /* private lateinit var svaIstrazivanja:List<Istrazivanje>
     private lateinit var svaUpisana:List<Istrazivanje>
 
     @Before
@@ -39,6 +39,6 @@ class IstrazivanjeRepositoryTest {
         var lista=IstrazivanjeRepository.getUpisani()
         assertTrue(lista.size==svaUpisana.size)
         assertTrue(svaUpisana.containsAll(lista))
-    }
+    }*/
 }
 

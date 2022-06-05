@@ -68,18 +68,18 @@ class Korisnik {
     fun getGrupePoNeupisanimIstrazivanjima():List<String>{
         var rez= listOf<Grupa>()
         var neupisanaIstrazivanja=getNeupisanaIstrazivanja()
-        for(n in neupisanaIstrazivanja){
+       /* for(n in neupisanaIstrazivanja){
             rez=rez.union(GrupaRepository.getGroupsByIstrazivanje(n)).toList()
-        }
+        }*/
         var rez1= rez.map { r->r.naziv }
         return rez1
     }
     fun getGrupePoNeupisanimIstrazivanjima1():List<Grupa>{
         var rez= listOf<Grupa>()
         var neupisanaIstrazivanja=getNeupisanaIstrazivanja()
-        for(n in neupisanaIstrazivanja){
+       /* for(n in neupisanaIstrazivanja){
             rez=rez.union(GrupaRepository.getGroupsByIstrazivanje(n)).toList()
-        }
+        }*/
         return rez
     }
     fun addIstrazivanja(i:Istrazivanje){

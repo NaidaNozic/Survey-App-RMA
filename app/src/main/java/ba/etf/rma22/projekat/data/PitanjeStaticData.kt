@@ -4,7 +4,7 @@ import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.data.models.PitanjeAnketa
 
 fun pitanja():List<Pitanje>{
-    return listOf(Pitanje("Pitanje 1","Kako se ja zovem?", listOf("Amela","Naida","Selma")),
+    return listOf(/*Pitanje("Pitanje 1","Kako se ja zovem?", listOf("Amela","Naida","Selma")),
     Pitanje("Pitanje 2","Kako se ja prezivam?", listOf("Mehić","Pita","Nožić")),
     Pitanje("Pitanje 3","Koji jezik je preporučen za razvoj Android aplikacija?", listOf("Java","Kotlin","C#")),
     Pitanje("Pitanje 4","Koja je najbliža planeta Suncu?",listOf("Zemlja","Jupiter","Merkur")),
@@ -13,7 +13,7 @@ fun pitanja():List<Pitanje>{
     Pitanje("Pitanje 7","Glavni grad BiH je:", listOf("Mostar","Sarajevo","Banja Luka")),
     Pitanje("Pitanje 8","Najbrža životinja na svijetu je:",listOf("Slon","Lav","Gepard")),
     Pitanje("Pitanje 9","Koliko ima kontinenata?", listOf("10","8","7")),
-    Pitanje("Pitanje 10","Koliko dana ima u godini?", listOf("366","365","367")))
+    Pitanje("Pitanje 10","Koliko dana ima u godini?", listOf("366","365","367"))*/)
 }
 fun pitanjaPoAnketi():List<PitanjeAnketa>{
     return listOf(PitanjeAnketa("Pitanje 1","Anketa 1","Istraživanje broj 2"),

@@ -7,7 +7,7 @@ import java.util.*
 
 object SveAnketeRepository {
 
-    fun postaviPitanjeIOdabranOdgovor(anketa:String,istrazivanje: String,tekst:String,odabranOdg:String){
+   /* fun postaviPitanjeIOdabranOdgovor(anketa:String,istrazivanje: String,tekst:String,odabranOdg:String){
         val anketa1= SveAnkete.ankete.find { a->a.naziv==anketa && a.nazivIstrazivanja==istrazivanje}?.pitanja
         val pitanje=anketa1?.get(tekst)
         if(pitanje!=null){
@@ -32,7 +32,7 @@ object SveAnketeRepository {
     fun dajSveAnkete():List<Anketa>{
         return SveAnkete.ankete
     }
-    fun dajMojeAnkete():MutableList<Anketa>{
+  /*  fun dajMojeAnkete():MutableList<Anketa>{
         val rez= mutableListOf<Anketa>()
         for(i in Korisnik.upisanaIstrazivanja)
             for(g in Korisnik.upisaneGrupe)
@@ -40,7 +40,7 @@ object SveAnketeRepository {
                     for(a in SveAnkete.ankete)
                         if(a.nazivIstrazivanja==i.naziv && a.nazivGrupe==g.naziv) rez.add(a)
         return rez
-    }
+    }*/
     fun dajUradjeneAnkete():MutableList<Anketa>{
         val rez= mutableListOf<Anketa>()
         for(a in SveAnkete.ankete)
@@ -60,5 +60,5 @@ object SveAnketeRepository {
         for(a in SveAnkete.ankete)
             if (a.datumKraj< Date() && a.progres<1F)rez.add(a)
         return rez
-    }
+    }*/
 }

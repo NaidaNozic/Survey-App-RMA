@@ -1,4 +1,5 @@
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
+import ba.etf.rma22.projekat.data.models.AnketaTaken
+import ba.etf.rma22.projekat.data.models.Odgovor
+import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
+import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
+import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class AnketaListAdapter(private var ankete: List<Anketa>,
@@ -23,22 +34,28 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
     override fun getItemCount(): Int = ankete.size
     override fun onBindViewHolder(holder: AnketaViewHolder, position: Int) {
         var a=ankete[position]
-        holder.title.text = a.naziv
-        holder.nazivIstrazivanja.text=a.nazivIstrazivanja
 
-        if(a.progres>0 && a.progres<0.2){
-            if(0F+0.1<a.progres) a.progres=0.2F else a.progres=0F
-        }else if(a.progres>0.2 && a.progres<0.4){
-            if(0.2+0.1<a.progres) a.progres=0.4F else a.progres=0.2F
-        }else if(a.progres>0.4 && a.progres<0.6){
-            if(0.4+0.1<a.progres) a.progres=0.6F else a.progres=0.4F
-        }else if(a.progres>0.6 && a.progres<0.8){
-            if(0.6+0.1<a.progres) a.progres=0.8F else a.progres=0.6F
-        }else if(a.progres>0.8 && a.progres<1){
-            if(0.8+0.1<a.progres) a.progres=1F else a.progres=0.8F
+        holder.nazivIstrazivanja.text=a.nazivIstrazivanja
+        holder.title.text = a.naziv
+        var poceteAnkete:List<AnketaTaken> = listOf()
+        var pocetaAnketa:AnketaTaken? =null
+        var odgovori:List<Odgovor> = listOf()
+        var brPitanja=0
+        val job1=GlobalScope.launch (Dispatchers.IO) {
+            poceteAnkete = TakeAnketaRepository.getPoceteAnkete()!!
         }
-        val pom:Int =(a.progres*10).toInt()
-        holder.progresZavrsetka.progress=pom
+        runBlocking { job1.join() }
+        pocetaAnketa=poceteAnkete.find { p->p.idAnkete==a.id }
+      /*  val tmp:Int?
+
+            tmp= pocetaAnketa?.progres
+            if(tmp!=null && SveAnkete.upisanaIstrazivanja.find { i->i==a.nazivIstrazivanja }!=null
+                && SveAnkete.upisaneGrupe.find { g->g==a.nazivGrupe }!=null){
+                    a.progres=tmp
+                Log.d("PROGRESS:",tmp.toString())
+            }*/
+
+        holder.progresZavrsetka.progress=a.progres/10
 
         //stanje ankete
         var plava=0
@@ -46,17 +63,27 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
         var zelena=0
         var zuta=0
 
+
         if(a.datumRada!=null){
             //ako smo uradili anketu i predali (datumRada!=null && status=plav)
-                plava=1
-        }else{
-            //ako anketa nije zavrsena( predata )
-            if(a.progres==1F && a.datumRada != null)plava=1
-            else if (a.datumKraj > Date() && a.datumPocetak < Date()) {
-                //anketa je aktivna
-                if (a.progres < 1F) zelena = 1
-            } else if (a.datumPocetak > Date()) zuta = 1
-            else if (a.datumKraj < Date() && a.progres < 1F) crvena = 1
+            if((a.datumKraj==null || a.datumKraj!!>Date()) && a.datumPocetak < Date())plava=1
+        }
+        else{
+            val job=GlobalScope.launch (Dispatchers.IO) {
+                if(pocetaAnketa!=null)
+                    odgovori= pocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa( it.id) }!!
+                else odgovori= listOf()
+                brPitanja= PitanjeAnketaRepository.getPitanja(a.id)?.size ?: 0
+            }
+            runBlocking { job.join() }
+            if(brPitanja==odgovori.size && brPitanja>0 && (a.datumKraj==null || a.datumKraj!!>Date()) && a.datumPocetak < Date())plava=1
+            if((a.datumKraj==null || a.datumKraj!!>Date()) && a.datumPocetak < Date()){
+                //aktivna anketa i moze se jos uraditi
+                if (a.progres < 100) zelena = 1
+            }else if(a.datumPocetak > Date()){
+                zuta = 1 //buduca
+            }else if((a.datumKraj !=null && a.datumKraj!! < Date()) && a.progres < 100) crvena = 1 //prosla
+            else crvena=1
         }
 
         val context: Context = holder.stanje.getContext()
@@ -68,17 +95,19 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
             id = context.getResources()
                 .getIdentifier("crvena", "drawable", context.getPackageName())
             holder.datum.text="Anketa zatvorena: "
-            calendar.time = a.datumKraj
+            if (a.datumKraj!=null) calendar.time = a.datumKraj
+            else calendar.time=Date()
         }else if(zelena==1){
             id = context.getResources()
                 .getIdentifier("zelena", "drawable", context.getPackageName())
             holder.datum.text="Vrijeme zatvaranja: "
-            calendar.time = a.datumKraj
+            if (a.datumKraj!=null) calendar.time = a.datumKraj
+            else calendar.time=Date()
         }else if(plava==1){
             id = context.getResources()
                 .getIdentifier("plava", "drawable", context.getPackageName())
             holder.datum.text="Anketa urađena: "
-            calendar.time = a.datumRada!!
+            calendar.time = pocetaAnketa?.datumRada
         }else if(zuta==1){
             id = context.getResources()
                 .getIdentifier("zuta", "drawable", context.getPackageName())
