@@ -14,8 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-
-
 class FragmentPitanje: Fragment() {
     lateinit var pitanjenaEkranu:TextView
     lateinit var pitanje:Pitanje

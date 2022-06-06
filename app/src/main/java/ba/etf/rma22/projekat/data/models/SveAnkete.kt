@@ -9,5 +9,6 @@ class SveAnkete {
         var upisaneGrupe:MutableList<String> = mutableListOf()
 
         var odgovoriPrijePredavanja:MutableMap<Int,Int> = mutableMapOf()
+        var posljednjaOdabranaGodina:Int =1
     }
 }

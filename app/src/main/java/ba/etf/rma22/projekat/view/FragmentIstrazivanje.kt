@@ -21,7 +21,6 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
     private lateinit var spinnerIstrazivanja: Spinner
     private lateinit var spinnerGrupe: Spinner
     private var godine = mutableListOf("1","2","3","4","5")
-    private var korisnik = Korisnik()
     private val grupe:MutableList<Grupa> =groups
     private var upisaneGrupe:MutableList<Grupa> = mutableListOf()
     private val istrazivanja:MutableList<Istrazivanje> =i
@@ -35,7 +34,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
         val arrayAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, godine)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGodine.adapter=arrayAdapter
-        spinnerGodine.setSelection(korisnik.getPosljednjaGodina()-1)
+        spinnerGodine.setSelection(SveAnkete.posljednjaOdabranaGodina-1)
 
         //spinner za istrazivanja
         spinnerIstrazivanja=view.findViewById(R.id.odabirIstrazivanja)
@@ -77,6 +76,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val odabranaGodina=parent!!.getItemAtPosition(position).toString()
+                SveAnkete.posljednjaOdabranaGodina=odabranaGodina.toInt()
                 updateSpinnerIstrazivanje(odabranaGodina)
             }
         }

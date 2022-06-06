@@ -8,4 +8,13 @@ data class Pitanje (
     @SerializedName("naziv") val naziv: String,
     @SerializedName("tekstPitanja") val tekstPitanja: String,
     @SerializedName("opcije")val opcije:List<String>
-):Serializable
+):Serializable{
+    override fun hashCode(): Int{
+        return id.hashCode()
+    }
+    override fun equals(other: Any?): Boolean{
+        val pitanje=other as Pitanje
+        if(pitanje.id==this.id)return true
+        return false
+    }
+}

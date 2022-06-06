@@ -11,4 +11,13 @@ data class AnketaTaken(
     @SerializedName("datumRada")val datumRada: Date,
     @SerializedName("AnketumId")val AnketumId: Int=-1,
     @SerializedName("message")val message:String=" "
-):Serializable
+):Serializable{
+    override fun hashCode(): Int{
+        return id.hashCode()
+    }
+    override fun equals(other: Any?): Boolean{
+        val anketaTaken=other as AnketaTaken
+        if(anketaTaken.id==this.id)return true
+        return false
+    }
+}

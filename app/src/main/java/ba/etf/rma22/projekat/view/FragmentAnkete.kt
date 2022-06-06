@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
-import ba.etf.rma22.projekat.data.models.Korisnik
 import ba.etf.rma22.projekat.data.models.Pitanje
 import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
@@ -29,7 +28,6 @@ class FragmentAnkete : Fragment(){
     private lateinit var anketeAdapter: AnketaListAdapter
     private var anketeListViewModel = AnketaListViewModel()
     private lateinit var spinner: Spinner
-    private var korisnik= Korisnik()
     private lateinit var sm: PomocniInterfejs
     private lateinit var anketa:Anketa
     private var elementiSpinnera = arrayOf(
@@ -91,8 +89,6 @@ class FragmentAnkete : Fragment(){
         //buduce ankete ne moze otvoriti
         if(anketa.datumPocetak> Date())return
         //samo ankete na koje je upisan moze otvoriti
-       // if(!AnketaRepository.getMyAnkete().contains(anketa))return
-       // val p=PitanjeAnketaRepository.getPitanja(anketa.naziv,anketa.nazivIstrazivanja)
         this.anketa=anketa
         sm = activity as PomocniInterfejs
         PitanjaViewModel().getPitanjaByAnketa(anketa.id,onSuccess = ::onSuccess, onError = ::onError)
@@ -116,13 +112,10 @@ class FragmentAnkete : Fragment(){
         sm.openPitanja(pitanja,anketa,zapocetaAnketa)
     }
     fun onError() {
-        val toast = Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
+        val toast = Toast.makeText(context, "Niste upisani na ovu anketu", Toast.LENGTH_SHORT)
         toast.show()
     }
     fun onSuccess1(ankete:List<Anketa>){
         anketeAdapter.updateAnkete(ankete)
-    }
-    fun onSuccess(t:Boolean){
-        tt=t
     }
 }

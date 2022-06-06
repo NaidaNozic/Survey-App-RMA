@@ -38,16 +38,14 @@ class ListViewAdapter(
         runBlocking { job.join() }
         if(predana==false && (fragment.anketa.datumKraj==null || fragment.anketa.datumKraj!! > Date()))
         view.setOnClickListener{
-            if(fragment.prijasnjiOdgovori?.find { o->o.odgovoreno==position+1 && o.pitanjeId==fragment.pitanje.id } ==null){
+            if(fragment.prijasnjiOdgovori?.find { o->o.odgovoreno==position+1 && o.pitanjeId==fragment.pitanje.id } ==null &&
+               fragment.prijasnjiOdgovori?.find { o->o.pitanjeId==fragment.pitanje.id } ==null &&
+                    SveAnkete.odgovoriPrijePredavanja.get(fragment.pitanje.id)==null &&
+                (fragment.anketa.datumKraj==null || fragment.anketa.datumKraj!! >Date())){
+                    //jedino se moze odgovarati na trenutno aktivne ankete
+                        //samo je jedan odgovor moguce oznaciti
                 tw.setTextColor(Color.parseColor("#0000FF"))
                 SveAnkete.odgovoriPrijePredavanja.put(fragment.pitanje.id,position)
-                /*val job= GlobalScope.launch (Dispatchers.IO){
-                    val progres=OdgovorRepository.postaviOdgovorAnketa(fragment.zapocetaAnketa.id,fragment.pitanje.id,position)
-                    if(progres==-1) {
-                        tw.setTextColor(Color.parseColor("#C02525"))
-                    }
-                }
-                runBlocking { job.join() }*/
             }
         }
         if(fragment.prijasnjiOdgovori?.find { o->o.odgovoreno==position && o.pitanjeId==fragment.pitanje.id } !=null)
