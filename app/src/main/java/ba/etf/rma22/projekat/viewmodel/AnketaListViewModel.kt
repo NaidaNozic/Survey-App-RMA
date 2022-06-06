@@ -14,15 +14,7 @@ class AnketaListViewModel {
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-   fun getAnkete(onSuccess: (ankete: MutableList<Anketa>) -> Unit, onError: () -> Unit){
-       scope.launch{
-           val result = AnketaRepository.getAll()
-           when (result) {
-               is MutableList<Anketa> -> onSuccess?.invoke(result)
-               else-> onError?.invoke()
-           }
-       }
-   }
+
     fun getMyAnkete(onSuccess: (ankete: MutableList<Anketa>) -> Unit, onError: () -> Unit){
         scope.launch{
             var result = AnketaRepository.getUpisane()
@@ -56,56 +48,6 @@ class AnketaListViewModel {
             val result = AnketaRepository.getFuture()
             when (result) {
                 is MutableList<Anketa> -> onSuccess?.invoke(result)
-                else-> onError?.invoke()
-            }
-        }
-    }
-    fun zapocniAnketu(idAnkete:Int){
-        scope.launch{
-            TakeAnketaRepository.zapocniAnketu(idAnkete)
-            Log.d("2", "2 ")
-        }
-    }
-    fun getPoceteAnkete():List<AnketaTaken>?{
-        var result:List<AnketaTaken>?=null
-        scope.launch{
-            result = TakeAnketaRepository.getPoceteAnkete()
-        }
-        return result
-    }
-    fun getPocetuAnketu(idAnketa:Int,onSuccess: (t:Boolean) -> Unit, onError: () -> Unit){
-        var result:List<AnketaTaken>?
-        scope.launch{
-            result = TakeAnketaRepository.getPoceteAnkete()
-            if(result?.find { a->a.AnketumId==idAnketa }!=null){
-                onSuccess?.invoke(true)
-            }else onSuccess?.invoke(false)
-        }
-    }
-    fun getOdgovori(idAnkete:Int, onSuccess: (odgovori: List<Odgovor>) -> Unit, onError: () -> Unit){
-        scope.launch{
-            val result = OdgovorRepository.getOdgovoriAnketa(idAnkete)
-            when (result) {
-                is List<Odgovor> -> onSuccess?.invoke(result)
-                else-> onError?.invoke()
-            }
-        }
-    }
-    fun postaviOdgovorAnketa(idAnketaTaken:Int,idPitanje:Int,odgovor:Int,
-                             onSuccess: (odgovor: Int) -> Unit, onError: () -> Unit){
-        scope.launch{
-            val result = OdgovorRepository.postaviOdgovorAnketa(idAnketaTaken,idPitanje,odgovor)
-            when (result) {
-                is Int -> onSuccess?.invoke(result)
-                else-> onError?.invoke()
-            }
-        }
-    }
-    fun getAnketaById(id:Int, onSuccess: (anketa: Anketa) -> Unit, onError: () -> Unit){
-        scope.launch{
-            val result = AnketaRepository.getById(id)
-            when (result) {
-                is Anketa -> onSuccess?.invoke(result)
                 else-> onError?.invoke()
             }
         }

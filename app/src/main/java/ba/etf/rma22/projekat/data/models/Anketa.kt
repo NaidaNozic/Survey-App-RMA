@@ -15,4 +15,13 @@ data class Anketa(
     @SerializedName("message")var message:String?=" ",
     var progres: Int=0,
     var nazivGrupe: String= " "
-):Serializable
+):Serializable{
+    override fun hashCode(): Int{
+        return id.hashCode()
+    }
+    override fun equals(other: Any?): Boolean{
+        val anketa=other as Anketa
+        if(anketa.id==this.id)return true
+        return false
+    }
+}

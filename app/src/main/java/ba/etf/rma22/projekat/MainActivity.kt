@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
 
     override fun openPitanja(p:List<Pitanje>,anketa: Anketa,zapocetaAnketa:AnketaTaken?) {
         val job=GlobalScope.launch (Dispatchers.IO){
-            if (zapocetaAnketa != null && OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.id)?.size==p.size) {
+            if (zapocetaAnketa != null && OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)?.size==p.size) {
                 anketa.datumRada = Date()
             }
         }

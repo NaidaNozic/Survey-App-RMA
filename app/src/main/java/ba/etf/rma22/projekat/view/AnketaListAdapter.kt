@@ -35,24 +35,15 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
 
         holder.nazivIstrazivanja.text=a.nazivIstrazivanja
         holder.title.text = a.naziv
-        var poceteAnkete:List<AnketaTaken> = listOf()
+        var poceteAnkete:List<AnketaTaken>? = listOf()
         var pocetaAnketa:AnketaTaken? =null
         var odgovori:List<Odgovor> = listOf()
         var brPitanja=0
         val job1=GlobalScope.launch (Dispatchers.IO) {
-            poceteAnkete = TakeAnketaRepository.getPoceteAnkete()!!
+            poceteAnkete = TakeAnketaRepository.getPoceteAnkete()
         }
         runBlocking { job1.join() }
-        pocetaAnketa=poceteAnkete.find { p->p.AnketumId==a.id }
-      /*  val tmp:Int?
-
-            tmp= pocetaAnketa?.progres
-            if(tmp!=null && SveAnkete.upisanaIstrazivanja.find { i->i==a.nazivIstrazivanja }!=null
-                && SveAnkete.upisaneGrupe.find { g->g==a.nazivGrupe }!=null){
-                    a.progres=tmp
-                Log.d("PROGRESS:",tmp.toString())
-            }*/
-
+        pocetaAnketa= poceteAnkete?.find { p->p.AnketumId==a.id }
         holder.progresZavrsetka.progress=a.progres/10
 
         //stanje ankete
@@ -69,7 +60,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
         else{
             val job=GlobalScope.launch (Dispatchers.IO) {
                 if(pocetaAnketa!=null)
-                    odgovori= pocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa( it.id) }!!
+                    odgovori= pocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa( it.AnketumId) }!!
                 else odgovori= listOf()
                 brPitanja= PitanjeAnketaRepository.getPitanja(a.id)?.size ?: 0
             }

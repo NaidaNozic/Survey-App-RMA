@@ -51,7 +51,7 @@ class FragmentPitanje: Fragment() {
             }
         }
         val job=GlobalScope.launch (Dispatchers.IO){
-            prijasnjiOdgovori=OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.id)
+            prijasnjiOdgovori=OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)
         }
         runBlocking { job.join() }
         val adapter=ListViewAdapter(view.context, R.layout.list_item,listt,this)
@@ -59,6 +59,8 @@ class FragmentPitanje: Fragment() {
 
         button.setOnClickListener{
             sm = activity as PomocniInterfejs
+            //brise odabrane odgovore jer ih nije predao, vec je kliknuo na zaustavi anketu
+            SveAnkete.odgovoriPrijePredavanja= mutableMapOf()
             sm.izmijeniFragmente()
         }
         return view

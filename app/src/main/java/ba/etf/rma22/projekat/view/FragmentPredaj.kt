@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.Anketa
 import ba.etf.rma22.projekat.data.models.AnketaTaken
+import ba.etf.rma22.projekat.data.models.SveAnkete
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,12 +40,12 @@ class FragmentPredaj: Fragment() {
         var brojOdgovorenihPitanja: Int? = 0
 
         val job1= GlobalScope.launch (Dispatchers.IO){
-            brojOdgovorenihPitanja = OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.id)?.size
+            brojOdgovorenihPitanja = OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)?.size
         }
         runBlocking { job1.join() }
 
         var progres: Float
-
+        brojOdgovorenihPitanja= brojOdgovorenihPitanja?.plus(SveAnkete.odgovoriPrijePredavanja.size)
         if (brojOdgovorenihPitanja != null) progres =
             brojOdgovorenihPitanja!!.toFloat() / (sm.getItemCount() - 1)//racunam novi progres
         else progres = 0F
@@ -52,6 +53,14 @@ class FragmentPredaj: Fragment() {
         text.text = (progres * 100).toString().split(".")[0] + "%"
 
         button.setOnClickListener {
+            var odgovoriKojiNisuPredani=SveAnkete.odgovoriPrijePredavanja
+            val job= GlobalScope.launch (Dispatchers.IO){
+                for(o in odgovoriKojiNisuPredani){
+                    OdgovorRepository.postaviOdgovorAnketa(zapocetaAnketa.id,o.key,o.value)
+                }
+                SveAnkete.odgovoriPrijePredavanja= mutableMapOf()
+            }
+            runBlocking { job.join() }
             sm.passDataAndGoToPoruka("Završili ste anketu " + a.naziv + " u okviru istraživanja " + a.nazivIstrazivanja)
         }
         return view
@@ -59,15 +68,15 @@ class FragmentPredaj: Fragment() {
     private fun zaokruziProgres(progres:Float):Float{
         var rez:Float=progres
         if(progres>0 && progres<0.2){
-            if(0F+0.1<progres) rez=0.2F else rez=0F
+            if(0F+0.1<progres) rez=0F else rez=0.2F
         }else if(progres>0.2 && progres<0.4){
-            if(0.2+0.1<progres) rez=0.4F else rez=0.2F
+            if(0.2+0.1<progres) rez=0.2F else rez=0.4F
         }else if(progres>0.4 && progres<0.6){
-            if(0.4+0.1<progres) rez=0.6F else rez=0.4F
+            if(0.4+0.1<progres) rez=0.4F else rez=0.6F
         }else if(progres>0.6 && progres<0.8){
-            if(0.6+0.1<progres) rez=0.8F else rez=0.6F
+            if(0.6+0.1<progres) rez=0.6F else rez=0.8F
         }else if(progres>0.8 && progres<1){
-            if(0.8+0.1<progres) rez=1F else rez=0.8F
+            if(0.8+0.1<progres) rez=0.8F else rez=1F
         }
         return rez
     }

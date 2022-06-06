@@ -1,5 +1,6 @@
 package ba.etf.rma22.projekat
 
+
 import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.*
 
@@ -17,6 +18,7 @@ import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import java.net.URL
+
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class RepositoryUnitTest {
@@ -98,7 +100,7 @@ class RepositoryUnitTest {
         var pitanja = PitanjeAnketaRepository.getPitanja(poceti!![poceti.size-1]?.AnketumId)
         var result = OdgovorRepository.postaviOdgovorAnketa(poceti!![poceti.size-1]?.id,pitanja!![0]?.id,1)
         assertThat(result,CoreMatchers.notNullValue())
-        assertThat(result,CoreMatchers.equalTo(50))
+        assertThat(result,CoreMatchers.equalTo(60))
         assertThat(OdgovorRepository.getOdgovoriAnketa(poceti!![poceti.size-1]?.AnketumId)!!.size,CoreMatchers.equalTo(1))
     }
     @Test
@@ -107,7 +109,7 @@ class RepositoryUnitTest {
         var poceti = TakeAnketaRepository.getPoceteAnkete()!!.map { ktid -> ankete!!.first{id -> id!!.id == ktid!!.AnketumId}}
         var nepoceti = AnketaRepository.getUpisane()!!.minus(poceti)
         assertThat(nepoceti.size, `is`(2))
-        assertThat(nepoceti, hasItem(nepoceti.first{it->it.naziv.contains("WT")}))
+        assertThat(nepoceti, hasItem(nepoceti.first{it->it.naziv.contains("Anketa 5")}))
     }
     @Test
     fun a9_provjeriAnkete() = runBlocking {

@@ -7,7 +7,7 @@ class SveAnkete {
     companion object GlobalneAnkete{
         var upisanaIstrazivanja:MutableList<String> = mutableListOf()
         var upisaneGrupe:MutableList<String> = mutableListOf()
-        //ove ankete su globalne i mogu im atribute mijenjati
-        var ankete= ankete().toMutableList()
+
+        var odgovoriPrijePredavanja:MutableMap<Int,Int> = mutableMapOf()
     }
 }

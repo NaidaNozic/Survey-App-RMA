@@ -55,7 +55,7 @@ object AnketaRepository {
 
                         if (pocetaAnketa != null)
                             odgovori =
-                                pocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa(it.id) }!!
+                                pocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa(it.AnketumId) }!!
                         else odgovori = listOf()
 
                         var brPitanja = PitanjeAnketaRepository.getPitanja(r.id)?.size ?: 0

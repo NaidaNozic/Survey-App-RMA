@@ -46,22 +46,4 @@ class IstrazivanjeIGrupaViewModel {
             }
         }
     }
-    /*fun getGrupeZaIstrazivanje(id:Int,onSuccess: (grupe: List<Grupa>) -> Unit, onError: () -> Unit){
-        scope.launch{
-            val result = IstrazivanjeIGrupaRepository.getGrupeZaIstrazivanje(id)
-            when (result) {
-                is List<Grupa> -> onSuccess?.invoke(result)
-                else-> onError?.invoke()
-            }
-        }
-    }*/
-    fun getIstrazivanje(id: Int, onSuccess: (istrazivanje: Istrazivanje) -> Unit, onError: () -> Unit){
-        scope.launch{
-            val result = IstrazivanjeIGrupaRepository.getIstrazivanje(id)
-            when (result) {
-                is Istrazivanje -> onSuccess?.invoke(result)
-                else-> onError?.invoke()
-            }
-        }
-    }
 }

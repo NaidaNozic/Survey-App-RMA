@@ -9,13 +9,15 @@ object TakeAnketaRepository {
    suspend fun zapocniAnketu(idAnkete:Int): AnketaTaken? {
         //kreira pokušaj za anketu,
         //vraća kreirani pokušaj ili null u slučaju greške
-       var response = ApiAdapter.retrofit.zapocniOdgovaranje(AccountRepository.getHash(),idAnkete)
-       val responseBody=response.body()
-       if (response.isSuccessful && responseBody != null && responseBody.message==null) {
-           return responseBody
-       } else {
+       return withContext(Dispatchers.IO) {
+           var response = ApiAdapter.retrofit.zapocniOdgovaranje(AccountRepository.getHash(),idAnkete)
+           val responseBody=response.body()
+           if (response.isSuccessful && responseBody != null && (responseBody.message==null || responseBody.message==" ")) {
+               return@withContext responseBody
+           } else {
+           }
+           return@withContext null
        }
-       return null
     }
 
    suspend fun getPoceteAnkete():List<AnketaTaken>?{
