@@ -1,7 +1,9 @@
 package ba.etf.rma22.projekat.view
 
 import AnketaListAdapter
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +14,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import ba.etf.rma22.projekat.MainActivity
 import ba.etf.rma22.projekat.R
-import ba.etf.rma22.projekat.data.models.Anketa
-import ba.etf.rma22.projekat.data.models.AnketaTaken
-import ba.etf.rma22.projekat.data.models.Pitanje
-import ba.etf.rma22.projekat.data.repositories.TakeAnketaRepository
+import ba.etf.rma22.projekat.data.models.*
+import ba.etf.rma22.projekat.data.repositories.*
 import ba.etf.rma22.projekat.viewmodel.AnketaListViewModel
 import ba.etf.rma22.projekat.viewmodel.PitanjaViewModel
 import kotlinx.coroutines.*
@@ -37,7 +38,6 @@ class FragmentAnkete : Fragment(){
         "Buduće ankete",
         "Prošle ankete"
     )
-    private var tt:Boolean=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
@@ -64,21 +64,63 @@ class FragmentAnkete : Fragment(){
         ankete.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         anketeAdapter = AnketaListAdapter(mutableListOf()) { anketa -> showAnketa(anketa) }
         ankete.adapter = anketeAdapter
-        anketeListViewModel.getMyAnkete( onSuccess = ::onSuccess1, onError = ::onError)
+        if(InternetConnection.prisutna) {
+            anketeListViewModel.getMyAnkete(onSuccess = ::onSuccess1, onError = ::onError)
+        }
+        else{
+            var ankete: List<Anketa>
+            runBlocking { ankete=AnketaRepository.getAll() }
+          /*  var aa= mutableListOf<Anketa>()
+            aa=ankete.toMutableList()
+            aa.removeAll { a->a.upisana==0 }*/
+            anketeAdapter.updateAnkete(ankete.toMutableList())
+        }
+        preuzmiSveGrupe()
+        preuzmiSvaIstrazivanja()
         return view
     }
-
     companion object {
         fun newInstance(): FragmentAnkete = FragmentAnkete()
+    }
+    fun preuzmiSveGrupe(){
+        runBlocking {
+            SveAnkete.sveGrupe= IstrazivanjeIGrupaRepository.getGrupe()?.toMutableList() ?: mutableListOf()
+        }
+    }
+    fun preuzmiSvaIstrazivanja(){
+        runBlocking {
+            SveAnkete.svaIstrazivanja=IstrazivanjeIGrupaRepository.getIstrazivanja()?.toMutableList() ?: mutableListOf()
+        }
     }
 
     fun promjenaAnketa(o:String){
         if(o=="Sve moje ankete"){
-            anketeListViewModel.getMyAnkete( onSuccess = ::onSuccess1, onError = ::onError)
+            if(InternetConnection.prisutna)
+                anketeListViewModel.getMyAnkete( onSuccess = ::onSuccess1, onError = ::onError)
+            else {
+                var ankete: List<Anketa>?
+                runBlocking { ankete= AnketaRepository.getUpisane() }
+                var aa= mutableListOf<Anketa>()
+                aa= ankete?.toMutableList() ?:mutableListOf<Anketa>()
+                aa.removeAll { a->a.upisana==0 }
+                ankete?.let { anketeAdapter.updateAnkete(it.toMutableList()) }
+            }
         }else if(o=="Sve ankete"){
+            if(InternetConnection.prisutna)
             anketeListViewModel.getAnketeByOffset(onSuccess = ::onSuccess1, onError = ::onError)
+          else{
+                var ankete: List<Anketa>
+                runBlocking { ankete=AnketaRepository.getAll() }
+                anketeAdapter.updateAnkete(ankete)
+            }
         }else if(o=="Urađene ankete"){
-            anketeListViewModel.getDone( onSuccess = ::onSuccess1, onError = ::onError)
+            if(InternetConnection.prisutna){
+                anketeListViewModel.getDone( onSuccess = ::onSuccess1, onError = ::onError)
+            }else{
+                var ankete: List<Anketa>
+                runBlocking { ankete= AnketaRepository.getDone()!! }
+                anketeAdapter.updateAnkete(ankete)
+            }
         }else if(o=="Buduće ankete"){
             anketeListViewModel.getFuture(onSuccess = ::onSuccess1, onError = ::onError)
         }else if(o=="Prošle ankete"){
@@ -96,10 +138,18 @@ class FragmentAnkete : Fragment(){
     fun onSuccess(pitanja:List<Pitanje>){
     var zapocetaAnketa:AnketaTaken? =null
         val job=GlobalScope.launch (Dispatchers.IO){
-            var result = TakeAnketaRepository.getPoceteAnkete()
-            zapocetaAnketa=result?.find { a->a.AnketumId==anketa.id}
-            if(zapocetaAnketa==null){
-                zapocetaAnketa=TakeAnketaRepository.zapocniAnketu(anketa.id)
+            if(InternetConnection.prisutna){
+                var result = TakeAnketaRepository.getPoceteAnkete()
+                if(result!=null)for(r in result){
+                    TakeAnketaRepository.writeTakenAnkete(MainActivity.getContext(),
+                        AnketaTaken(r.id,r.student,r.progres,r.datumRada,r.AnketumId,"")
+                    )
+                }
+                zapocetaAnketa=result?.find { a->a.AnketumId==anketa.id}
+                if(zapocetaAnketa==null){zapocetaAnketa=TakeAnketaRepository.zapocniAnketu(anketa.id) }
+            }else{
+                var result=TakeAnketaRepository.getAll(MainActivity.getContext())
+                zapocetaAnketa=result?.find { a->a.AnketumId==anketa.id}
             }
         }
         runBlocking {

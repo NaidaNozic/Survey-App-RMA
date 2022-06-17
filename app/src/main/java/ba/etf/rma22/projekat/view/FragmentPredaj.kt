@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import ba.etf.rma22.projekat.MainActivity
 import ba.etf.rma22.projekat.R
-import ba.etf.rma22.projekat.data.models.Anketa
-import ba.etf.rma22.projekat.data.models.AnketaTaken
-import ba.etf.rma22.projekat.data.models.SveAnkete
+import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +27,7 @@ class FragmentPredaj: Fragment() {
         val view = inflater.inflate(R.layout.fragment_predaj, container, false)
         text = view.findViewById(R.id.progresTekst)
         button = view.findViewById(R.id.dugmePredaj)
+        if(!InternetConnection.prisutna)button.isEnabled=false
         val bundle = arguments
         sm=activity as PomocniInterfejs
 
@@ -40,7 +40,11 @@ class FragmentPredaj: Fragment() {
         var brojOdgovorenihPitanja: Int? = 0
 
         val job1= GlobalScope.launch (Dispatchers.IO){
-            brojOdgovorenihPitanja = OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)?.size
+            if(InternetConnection.prisutna){
+                brojOdgovorenihPitanja = OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)?.size
+            }else{
+                brojOdgovorenihPitanja=OdgovorRepository.getOdgovoriAnketa(MainActivity.getContext(),zapocetaAnketa.id)?.size
+            }
         }
         runBlocking { job1.join() }
 
@@ -51,6 +55,7 @@ class FragmentPredaj: Fragment() {
         else progres = 0F
         progres = zaokruziProgres(progres)
         text.text = (progres * 100).toString().split(".")[0] + "%"
+
 
         button.setOnClickListener {
             var odgovoriKojiNisuPredani=SveAnkete.odgovoriPrijePredavanja

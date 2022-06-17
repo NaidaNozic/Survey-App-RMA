@@ -22,7 +22,7 @@ import java.net.URL
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class RepositoryUnitTest {
-    suspend fun obrisi(){
+    suspend fun obrisi() {
         var client: OkHttpClient = OkHttpClient()
         var builder: Request.Builder = Request.Builder()
             .url(URL(ApiConfig.baseURL + "/student/" + AccountRepository.acHash + "/upisugrupeipokusaji"))
@@ -42,7 +42,6 @@ class RepositoryUnitTest {
         var istrazivanja = IstrazivanjeIGrupaRepository.getIstrazivanja()
         assertThat(istrazivanja,CoreMatchers.notNullValue())
         assertThat(istrazivanja?.size,CoreMatchers.equalTo(6))
-
     }
 
     @Test

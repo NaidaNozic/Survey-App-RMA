@@ -1,6 +1,7 @@
 package ba.etf.rma22.projekat.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,19 +16,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
-class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje>): Fragment() {
+class FragmentIstrazivanje(): Fragment() {
     private lateinit var dodajIstrazivanjeDugme: Button
     private lateinit var spinnerGodine: Spinner
     private lateinit var spinnerIstrazivanja: Spinner
     private lateinit var spinnerGrupe: Spinner
     private var godine = mutableListOf("1","2","3","4","5")
-    private val grupe:MutableList<Grupa> =groups
+    private var grupe:MutableList<Grupa> = SveAnkete.sveGrupe
     private var upisaneGrupe:MutableList<Grupa> = mutableListOf()
-    private val istrazivanja:MutableList<Istrazivanje> =i
+    private var istrazivanja:MutableList<Istrazivanje> =mutableListOf()
     private lateinit var sm: PomocniInterfejs
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_istrazivanje, container, false)
+        istrazivanja=SveAnkete.svaIstrazivanja
+        grupe=SveAnkete.sveGrupe
 
         //spinner za godine
         spinnerGodine=view.findViewById(R.id.odabirGodina)
@@ -50,6 +53,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
 
         //klik na upisi me
         dodajIstrazivanjeDugme=view.findViewById(R.id.dodajIstrazivanjeDugme)
+        if(!InternetConnection.prisutna)dodajIstrazivanjeDugme.isEnabled=false
         dodajIstrazivanjeDugme.setOnClickListener {
             val name = spinnerIstrazivanja.selectedItem.toString()
             val year = spinnerGodine.selectedItem.toString()
@@ -98,6 +102,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val odabrano=parent!!.getItemAtPosition(position).toString()
                 if(odabrano=="Odaberite grupu:")  dodajIstrazivanjeDugme.isEnabled = false
+                else if(!InternetConnection.prisutna)dodajIstrazivanjeDugme.isEnabled=false
                 else dodajIstrazivanjeDugme.isEnabled = true
             }
         }
@@ -115,8 +120,10 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
         if(this.istrazivanja.size==0){
             spinnerIstrazivanja.adapter=null
             spinnerGrupe.adapter=null
+            Log.d("ISTRAZIVANJA U SPINNERU11:",istrazivanje1.size.toString())
         }
         else {
+            Log.d("ISTRAZIVANJA U SPINNERU:",istrazivanje1.size.toString())
             val arrayAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, istrazivanje1)
             arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerIstrazivanja.adapter=arrayAdapter1
@@ -126,7 +133,8 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
         var grupe1:MutableList<String> = mutableListOf("Odaberite grupu:")
         if(spinnerIstrazivanja.selectedItem.toString()=="Odaberite istraživanje:") {
             dodajIstrazivanjeDugme.isEnabled = false
-        }else {
+            if(!InternetConnection.prisutna)dodajIstrazivanjeDugme.isEnabled=false
+        } else{
             dodajIstrazivanjeDugme.isEnabled = true
             var g: MutableList<Grupa> = mutableListOf()
             g.addAll(this.grupe)
@@ -137,6 +145,7 @@ class FragmentIstrazivanje(groups:MutableList<Grupa>, i:MutableList<Istrazivanje
             grupe1.add(0,"Odaberite grupu:")
         }
         spinnerGrupe = requireView().findViewById(R.id.odabirGrupa)
+        Log.d("GRUPE U SPINNERU:",grupe1.size.toString())
         val arrayAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, grupe1)
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGrupe.adapter=arrayAdapter2

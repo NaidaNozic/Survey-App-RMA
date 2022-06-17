@@ -1,11 +1,18 @@
 package ba.etf.rma22.projekat
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.data.models.*
-import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
+import ba.etf.rma22.projekat.data.repositories.*
 import ba.etf.rma22.projekat.view.*
 import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 import kotlinx.coroutines.*
@@ -17,17 +24,30 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPageAdapter
     private lateinit var fragmentPredaj: FragmentPredaj
-    private var grupe: MutableList<Grupa> = mutableListOf()
-    private var istrazivanja: MutableList<Istrazivanje> = mutableListOf()
+    private val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+    private val br: BroadcastReceiver = MyBroadcastReceiver()
+
+    companion object Companion {
+        private lateinit var context: Context
+
+        fun setContext(con: Context) {
+            context = con
+        }
+        fun getContext():Context{
+            return context
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        IstrazivanjeIGrupaViewModel().getGrupe(onSuccess = ::onSuccess, onError = ::onError)
-        IstrazivanjeIGrupaViewModel().getIstrazivanja(onSuccess = ::onSuccess1, onError = ::onError)
-
+        setContext(this)
+        if(intent?.action == Intent.ACTION_VIEW)
+            postaviHash(intent)
+        //obrisiBazu()
         viewPager = findViewById(R.id.pager)
-        val fragments = arrayListOf(FragmentAnkete(), FragmentIstrazivanje(grupe,istrazivanja))
+
+        val fragments = arrayListOf(FragmentAnkete(), FragmentIstrazivanje(/*this.grupe,this.istrazivanja*/))
         adapter = ViewPageAdapter(fragments, this)
         viewPager.adapter = adapter
 
@@ -36,7 +56,7 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
                 super.onPageSelected(position)
                 when (position) {
                     0 -> {
-                        if(adapter.createFragment(0) is FragmentAnkete)adapter.refreshFragment(1, FragmentIstrazivanje(grupe,istrazivanja))
+                        if(adapter.createFragment(0) is FragmentAnkete)adapter.refreshFragment(1, FragmentIstrazivanje(/*grupe,istrazivanja*/))
                     }
                 }
                 if(adapter.createFragment(0) is FragmentPitanje && position!=adapter.itemCount-1){
@@ -45,10 +65,20 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
             }
         })
     }
+    private fun postaviHash(intent: Intent) {
+        var poruka=""
+        intent.getStringExtra("payload")?.let {
+            runBlocking {
+                poruka=it
+                AccountRepository.postaviHash(poruka)
+            }
+           // Toast.makeText(this, poruka, Toast.LENGTH_SHORT).show()
+        }
+    }
     override fun izmijeniFragmente() {
         viewPager = findViewById(R.id.pager)
         adapter.refreshFragment(0, FragmentAnkete())
-        adapter.refreshFragment(1, FragmentIstrazivanje(grupe,istrazivanja))
+        adapter.refreshFragment(1, FragmentIstrazivanje(/*grupe,istrazivanja*/))
         viewPager.adapter = adapter
         viewPager.currentItem=0
     }
@@ -81,8 +111,18 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
 
     override fun openPitanja(p:List<Pitanje>,anketa: Anketa,zapocetaAnketa:AnketaTaken?) {
         val job=GlobalScope.launch (Dispatchers.IO){
-            if (zapocetaAnketa != null && OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)?.size==p.size) {
-                anketa.datumRada = Date()
+            if(InternetConnection.prisutna){
+                var odg= zapocetaAnketa?.let { OdgovorRepository.getOdgovoriAnketa(it.AnketumId) }
+                if (zapocetaAnketa != null && odg?.size==p.size) {
+                    anketa.datumRada = Date()
+                }
+                if(odg!=null)
+                    for(l in odg) OdgovorRepository.writeOdgovore(getContext(), Odgovor(l.odgovoreno,l.anketaTaken,l.pitanjeId))
+            }else{
+                var odgovori= zapocetaAnketa?.let {OdgovorRepository.getOdgovoriAnketa(context,it.id)}
+                    if(odgovori != null && zapocetaAnketa != null && odgovori.size==p.size){
+                        anketa.datumRada = Date()
+                    }
             }
         }
         runBlocking { job.join() }
@@ -110,7 +150,7 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
             }
         }
         viewPager = findViewById(R.id.pager)
-        adapter= ViewPageAdapter(arrayListOf(FragmentAnkete(), FragmentIstrazivanje(grupe,istrazivanja)),this)
+        adapter= ViewPageAdapter(arrayListOf(FragmentAnkete(), FragmentIstrazivanje(/*grupe,istrazivanja*/)),this)
         adapter.refreshFragment(0,fragments.get(0))
         adapter.refreshFragment(1,fragments.get(1))
         for(i in 2 until fragments.size)
@@ -123,11 +163,26 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
         return adapter.itemCount
     }
     fun onSuccess(grupe:List<Grupa>){
-        for(g in grupe)this.grupe.add(g)
+       // for(g in grupe)this.grupe.add(g)
+        SveAnkete.sveGrupe=grupe.toMutableList()
+        Log.d("SVE GRUPE:",SveAnkete.sveGrupe.size.toString())
     }
     fun onSuccess1(istrazivanja:List<Istrazivanje>){
-        for(i in istrazivanja)this.istrazivanja.add(i)
+       // for(i in istrazivanja)this.istrazivanja.add(i)
+        SveAnkete.svaIstrazivanja=istrazivanja.toMutableList()
+        Log.d("SVE ISTRAZIAVNJA:",SveAnkete.svaIstrazivanja.size.toString())
     }
     fun onError() {
+        val toast = Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT)
+        toast.show()
+    }
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(br, intentFilter)
+    }
+
+    override fun onPause() {
+        unregisterReceiver(br)
+        super.onPause()
     }
 }

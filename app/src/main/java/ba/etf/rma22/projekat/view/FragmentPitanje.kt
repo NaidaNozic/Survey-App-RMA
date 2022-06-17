@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import ba.etf.rma22.projekat.MainActivity
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
@@ -27,9 +28,9 @@ class FragmentPitanje: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_pitanje, container, false)
+        button=view.findViewById(R.id.dugmeZaustavi)
         pitanjenaEkranu=view.findViewById(R.id.tekstPitanja)
         odgovori=view.findViewById(R.id.odgovoriLista)
-        button=view.findViewById(R.id.dugmeZaustavi)
         sm = activity as PomocniInterfejs
         brojPitanja=sm.getItemCount()-1
         val bundle=arguments
@@ -49,7 +50,9 @@ class FragmentPitanje: Fragment() {
             }
         }
         val job=GlobalScope.launch (Dispatchers.IO){
-            prijasnjiOdgovori=OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)
+            if(InternetConnection.prisutna)
+            {prijasnjiOdgovori=OdgovorRepository.getOdgovoriAnketa(zapocetaAnketa.AnketumId)}
+            else prijasnjiOdgovori=OdgovorRepository.getOdgovoriAnketa(MainActivity.getContext(),zapocetaAnketa.id)
         }
         runBlocking { job.join() }
         val adapter=ListViewAdapter(view.context, R.layout.list_item,listt,this)

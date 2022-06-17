@@ -1,6 +1,9 @@
 package ba.etf.rma22.projekat.data.repositories
 
+import android.content.Context
+import ba.etf.rma22.projekat.MainActivity
 import ba.etf.rma22.projekat.data.ApiAdapter
+import ba.etf.rma22.projekat.data.AppDatabase1
 import ba.etf.rma22.projekat.data.models.JsonZaOdgovor
 import ba.etf.rma22.projekat.data.models.Odgovor
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +37,11 @@ object OdgovorRepository {
             else o1=0
             var brojPitanja= PitanjeAnketaRepository.getPitanja(idAnkete)?.size
             var json=JsonZaOdgovor(odgovor,idPitanje,zaokruziProgres(o1.toFloat()/brojPitanja!!))
+            //obaviti update ankete taken u bazi
+            TakeAnketaRepository.updateProgres(MainActivity.getContext(),zaokruziProgres(o1.toFloat()/brojPitanja!!),idAnketaTaken)
+            //upisati odgovor u bazu
+            writeOdgovore(MainActivity.getContext(), Odgovor(odgovor,idAnketaTaken,idPitanje," "))
+
             var response = ApiAdapter.retrofit.dodajOdgovor(AccountRepository.getHash(),idAnketaTaken,json)
             val responseBody=response.body()
             if (response.isSuccessful && responseBody != null /*&& responseBody.message==" "*/) {
@@ -58,5 +66,39 @@ object OdgovorRepository {
             if(0.8F+0.1F<progres) rez=0.8F else rez=1F
         }
         return (rez*100).toInt()
+    }
+    //////////METODE ZA BAZU//////////
+    suspend fun getAll(context: Context) : List<Odgovor> { //dobavlja sve ankete iz baze
+        return withContext(Dispatchers.IO) {
+            var db = AppDatabase1.getInstance(context)
+            var ankete = db!!.odgovorDao().getAll()
+            return@withContext ankete
+        }
+    }
+    suspend fun getOdgovoriAnketa(context: Context,idAnketaTaken:Int) : List<Odgovor> { //dobavlja sve ankete iz baze
+        return withContext(Dispatchers.IO) {
+            var db = AppDatabase1.getInstance(context)
+            var ankete = db!!.odgovorDao().findOdgovoreAnkete(idAnketaTaken)
+            return@withContext ankete
+        }
+    }
+    suspend fun writeOdgovore(context: Context, odgovor: Odgovor) : String?{ //upisuje anketu u bazu
+        return withContext(Dispatchers.IO) {
+            try{
+                var db = AppDatabase1.getInstance(context)
+                db!!.odgovorDao().insertAll(odgovor)
+                return@withContext "success"
+            }
+            catch(error:Exception){
+                return@withContext null
+            }
+        }
+    }
+    suspend fun deleteAll(context: Context) :Int{ //dobavlja sve ankete iz baze
+        return withContext(Dispatchers.IO) {
+            var db = AppDatabase1.getInstance(context)
+            var ankete = db!!.odgovorDao().deleteAll()
+            return@withContext ankete
+        }
     }
 }
