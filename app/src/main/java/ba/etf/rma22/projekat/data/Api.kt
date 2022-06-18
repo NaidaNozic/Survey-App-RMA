@@ -1,7 +1,6 @@
 package ba.etf.rma22.projekat.data
 
 import ba.etf.rma22.projekat.data.models.*
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -43,10 +42,10 @@ interface Api {
     suspend fun getPokusaje(@Path("id") id:String): Response<List<AnketaTaken>>
 
     @GET("student/{id}/anketataken/{ktid}/odgovori")
-    suspend fun getOdgovori(@Path("id") id:String,@Path("ktid") ktid:Int): Response<List<Odgovor>>
+    suspend fun getOdgovori(@Path("id") id:String,@Path("ktid") ktid:Int): Response<List<Odgovor1>>
 
     @POST("student/{id}/anketataken/{ktid}/odgovor")
-    suspend fun dodajOdgovor(@Path("id") id:String,@Path("ktid")ktid:Int,@Body json:JsonZaOdgovor): Response<Odgovor>
+    suspend fun dodajOdgovor(@Path("id") id:String,@Path("ktid")ktid:Int,@Body json:JsonZaOdgovor): Response<Odgovor1>
 
     @GET("grupa/{gid}/istrazivanje")
     suspend fun getIstrazivanjeGrupe(@Path("gid") gid:Int): Response<Istrazivanje>

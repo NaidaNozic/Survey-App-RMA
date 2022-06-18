@@ -1,5 +1,4 @@
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +31,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
         holder.title.text = a.naziv
         var poceteAnkete:List<AnketaTaken>? = listOf()
         var pocetaAnketa:AnketaTaken? =null
-        var odgovori:List<Odgovor> = listOf()
+        var odgovori:List<Odgovor1> = listOf()
         var brPitanja=0
         var job1: Job = Job()
         if(InternetConnection.prisutna) {
@@ -76,7 +75,7 @@ class AnketaListAdapter(private var ankete: List<Anketa>,
                         for (o in odgovori)
                             OdgovorRepository.writeOdgovore(
                                 holder.title.context,
-                                Odgovor(o.odgovoreno, o.anketaTaken, o.pitanjeId, "")
+                                Odgovor1(o.odgovoreno, o.anketaTaken, o.pitanjeId, "")
                             )
                     } else {
                         odgovori = pocetaAnketa?.let {

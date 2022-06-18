@@ -10,7 +10,7 @@ import android.widget.TextView
 import ba.etf.rma22.projekat.MainActivity
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.InternetConnection
-import ba.etf.rma22.projekat.data.models.Odgovor
+import ba.etf.rma22.projekat.data.models.Odgovor1
 import ba.etf.rma22.projekat.data.models.SveAnkete
 import ba.etf.rma22.projekat.data.repositories.OdgovorRepository
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class ListViewAdapter(
                 var odg=OdgovorRepository.getOdgovoriAnketa(fragment.zapocetaAnketa.AnketumId)
                 if(odg?.size==fragment.brojPitanja)predana=true
                 if(odg!=null)for(i in odg){
-                    OdgovorRepository.writeOdgovore(MainActivity.getContext(), Odgovor(i.odgovoreno,i.anketaTaken,i.pitanjeId,""))
+                    OdgovorRepository.writeOdgovore(MainActivity.getContext(), Odgovor1(i.odgovoreno,i.anketaTaken,i.pitanjeId,""))
                 }
             }else{
                 if(OdgovorRepository.getOdgovoriAnketa(MainActivity.getContext(),fragment.zapocetaAnketa.id)?.size==fragment.brojPitanja)

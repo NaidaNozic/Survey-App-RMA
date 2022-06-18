@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,7 +13,6 @@ import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.data.models.*
 import ba.etf.rma22.projekat.data.repositories.*
 import ba.etf.rma22.projekat.view.*
-import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -42,9 +40,10 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setContext(this)
+
+       // context.deleteDatabase("RMA22DB")
         if(intent?.action == Intent.ACTION_VIEW)
             postaviHash(intent)
-        //obrisiBazu()
         viewPager = findViewById(R.id.pager)
 
         val fragments = arrayListOf(FragmentAnkete(), FragmentIstrazivanje(/*this.grupe,this.istrazivanja*/))
@@ -117,7 +116,7 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
                     anketa.datumRada = Date()
                 }
                 if(odg!=null)
-                    for(l in odg) OdgovorRepository.writeOdgovore(getContext(), Odgovor(l.odgovoreno,l.anketaTaken,l.pitanjeId))
+                    for(l in odg) OdgovorRepository.writeOdgovore(getContext(), Odgovor1(l.odgovoreno,l.anketaTaken,l.pitanjeId))
             }else{
                 var odgovori= zapocetaAnketa?.let {OdgovorRepository.getOdgovoriAnketa(context,it.id)}
                     if(odgovori != null && zapocetaAnketa != null && odgovori.size==p.size){

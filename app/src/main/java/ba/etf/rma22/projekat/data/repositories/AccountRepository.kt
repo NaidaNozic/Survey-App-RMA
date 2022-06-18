@@ -17,9 +17,7 @@ object AccountRepository {
         this.acHash=acHash
         var accounti=getAll(MainActivity.getContext())
         if(accounti!=null && accounti.size>0){
-            Log.d("BRISE SE SVE","")
             deleteAll(MainActivity.getContext())
-            Log.d("BROJ ACCOUNTA", getAll(MainActivity.getContext())?.size.toString())
             AnketaRepository.deleteAll(MainActivity.getContext())
             PitanjeAnketaRepository.deleteAll(MainActivity.getContext())
             OdgovorRepository.deleteAll(MainActivity.getContext())

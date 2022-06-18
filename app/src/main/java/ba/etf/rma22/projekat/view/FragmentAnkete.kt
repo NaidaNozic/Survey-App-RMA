@@ -41,7 +41,6 @@ class FragmentAnkete : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
-
         //spinner
         spinner=view.findViewById(R.id.filterAnketa)
         val arrayAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, elementiSpinnera)
@@ -70,27 +69,12 @@ class FragmentAnkete : Fragment(){
         else{
             var ankete: List<Anketa>
             runBlocking { ankete=AnketaRepository.getAll() }
-          /*  var aa= mutableListOf<Anketa>()
-            aa=ankete.toMutableList()
-            aa.removeAll { a->a.upisana==0 }*/
             anketeAdapter.updateAnkete(ankete.toMutableList())
         }
-        preuzmiSveGrupe()
-        preuzmiSvaIstrazivanja()
         return view
     }
     companion object {
         fun newInstance(): FragmentAnkete = FragmentAnkete()
-    }
-    fun preuzmiSveGrupe(){
-        runBlocking {
-            SveAnkete.sveGrupe= IstrazivanjeIGrupaRepository.getGrupe()?.toMutableList() ?: mutableListOf()
-        }
-    }
-    fun preuzmiSvaIstrazivanja(){
-        runBlocking {
-            SveAnkete.svaIstrazivanja=IstrazivanjeIGrupaRepository.getIstrazivanja()?.toMutableList() ?: mutableListOf()
-        }
     }
 
     fun promjenaAnketa(o:String){

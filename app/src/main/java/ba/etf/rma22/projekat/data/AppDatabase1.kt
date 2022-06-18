@@ -11,19 +11,20 @@ import ba.etf.rma22.projekat.view.*
 /*Imat ce companion objekat koji će instancirati bazu te će se
 na taj način održati singleton pattern*/
 
-@Database(entities = arrayOf(Anketa::class, Grupa::class, AnketaTaken::class, Odgovor::class, Pitanje::class,
-    PitanjeAnketa::class, AnketaIGrupe::class, Istrazivanje::class, Account::class), version = 1)
+@Database(entities = arrayOf(Anketa::class, Grupa::class, AnketaTaken::class, Odgovor1::class, Pitanje::class,
+    PitanjeAnketa::class, AnketaIGrupe::class, Istrazivanje::class, Account::class, Odgovor::class), version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase1 :RoomDatabase(){
     abstract fun anketaDao(): AnketaDAO
     abstract fun grupaDao(): GrupaDAO
     abstract fun anketaTakenDao(): AnketaTakenDAO
-    abstract fun odgovorDao(): OdgovorDAO
+    abstract fun odgovor1DAO(): Odgovor1DAO
     abstract fun pitanjeDao(): PitanjeDAO
     abstract fun pitanjeAnketaDao(): PitanjeAnketaDAO
     abstract fun anketaIGrupeDao(): AnketaIGrupeDAO
     abstract fun istrazivanjeDao(): IstrazivanjeDAO
     abstract fun accountDao(): AccountDAO
+    abstract fun odgovorDao(): OdgovorDAO
 
     companion object {
         private var INSTANCE: AppDatabase1? = null
@@ -41,7 +42,7 @@ abstract class AppDatabase1 :RoomDatabase(){
             Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase1::class.java,
-                "RMA22P18836-baza7"
+                "RMA22DB"
             ).build()
     }
 }

@@ -9,6 +9,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import ba.etf.rma22.projekat.R
 import ba.etf.rma22.projekat.data.models.*
+import ba.etf.rma22.projekat.data.repositories.IstrazivanjeIGrupaRepository
 import ba.etf.rma22.projekat.viewmodel.IstrazivanjeIGrupaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,6 +30,11 @@ class FragmentIstrazivanje(): Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_istrazivanje, container, false)
+
+        runBlocking {
+            SveAnkete.sveGrupe= IstrazivanjeIGrupaRepository.getGrupe()?.toMutableList() ?: mutableListOf()
+            SveAnkete.svaIstrazivanja=IstrazivanjeIGrupaRepository.getIstrazivanja()?.toMutableList() ?: mutableListOf()
+        }
         istrazivanja=SveAnkete.svaIstrazivanja
         grupe=SveAnkete.sveGrupe
 

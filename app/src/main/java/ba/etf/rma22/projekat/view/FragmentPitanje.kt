@@ -21,7 +21,7 @@ class FragmentPitanje: Fragment() {
     private lateinit var button:Button
     private lateinit var odgovori:ListView
     private lateinit var sm: PomocniInterfejs
-    var prijasnjiOdgovori:List<Odgovor>? = null
+    var prijasnjiOdgovori:List<Odgovor1>? = null
     lateinit var anketa:Anketa
     lateinit var zapocetaAnketa:AnketaTaken
     var brojPitanja:Int =0

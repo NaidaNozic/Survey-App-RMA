@@ -6,10 +6,8 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-@Entity(primaryKeys = ["AnketaTakenId", "PitanjeId"])
+@Entity
 data class Odgovor(
+    @PrimaryKey(autoGenerate = true) @SerializedName("id") val id:Int,
     @ColumnInfo(name = "odgovoreno") @SerializedName("odgovoreno")val odgovoreno:Int, //index odgovora
-    @ColumnInfo(name = "AnketaTakenId") @SerializedName("AnketaTakenId")val anketaTaken:Int=-1,
-    @ColumnInfo(name = "PitanjeId")@SerializedName("PitanjeId")val pitanjeId:Int=-1,
-    @SerializedName("message")val message:String=" "
-):Serializable
+): Serializable

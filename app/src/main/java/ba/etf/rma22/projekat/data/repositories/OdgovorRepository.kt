@@ -6,12 +6,13 @@ import ba.etf.rma22.projekat.data.ApiAdapter
 import ba.etf.rma22.projekat.data.AppDatabase1
 import ba.etf.rma22.projekat.data.models.JsonZaOdgovor
 import ba.etf.rma22.projekat.data.models.Odgovor
+import ba.etf.rma22.projekat.data.models.Odgovor1
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object OdgovorRepository {
 
-   suspend fun getOdgovoriAnketa(idAnkete:Int):List<Odgovor>?{
+   suspend fun getOdgovoriAnketa(idAnkete:Int):List<Odgovor1>?{
         //vraća listu odgovora za anketu,
         //praznu listu ako student nije odgovarao ili nije upisan na zadanu anketu
        return withContext(Dispatchers.IO) {
@@ -40,7 +41,8 @@ object OdgovorRepository {
             //obaviti update ankete taken u bazi
             TakeAnketaRepository.updateProgres(MainActivity.getContext(),zaokruziProgres(o1.toFloat()/brojPitanja!!),idAnketaTaken)
             //upisati odgovor u bazu
-            writeOdgovore(MainActivity.getContext(), Odgovor(odgovor,idAnketaTaken,idPitanje," "))
+            writeOdgovore(MainActivity.getContext(), Odgovor1(odgovor,idAnketaTaken,idPitanje," "))
+            writeOdgovore1(MainActivity.getContext(),Odgovor(0,odgovor))//ovo je samo radi testova dodano
 
             var response = ApiAdapter.retrofit.dodajOdgovor(AccountRepository.getHash(),idAnketaTaken,json)
             val responseBody=response.body()
@@ -68,21 +70,33 @@ object OdgovorRepository {
         return (rez*100).toInt()
     }
     //////////METODE ZA BAZU//////////
-    suspend fun getAll(context: Context) : List<Odgovor> { //dobavlja sve ankete iz baze
+    suspend fun getAll(context: Context) : List<Odgovor1> { //dobavlja sve ankete iz baze
         return withContext(Dispatchers.IO) {
             var db = AppDatabase1.getInstance(context)
-            var ankete = db!!.odgovorDao().getAll()
+            var ankete = db!!.odgovor1DAO().getAll()
             return@withContext ankete
         }
     }
-    suspend fun getOdgovoriAnketa(context: Context,idAnketaTaken:Int) : List<Odgovor> { //dobavlja sve ankete iz baze
+    suspend fun getOdgovoriAnketa(context: Context,idAnketaTaken:Int) : List<Odgovor1> { //dobavlja sve ankete iz baze
         return withContext(Dispatchers.IO) {
             var db = AppDatabase1.getInstance(context)
-            var ankete = db!!.odgovorDao().findOdgovoreAnkete(idAnketaTaken)
+            var ankete = db!!.odgovor1DAO().findOdgovoreAnkete(idAnketaTaken)
             return@withContext ankete
         }
     }
-    suspend fun writeOdgovore(context: Context, odgovor: Odgovor) : String?{ //upisuje anketu u bazu
+    suspend fun writeOdgovore(context: Context, odgovor1: Odgovor1) : String?{ //upisuje anketu u bazu
+        return withContext(Dispatchers.IO) {
+            try{
+                var db = AppDatabase1.getInstance(context)
+                db!!.odgovor1DAO().insertAll(odgovor1)
+                return@withContext "success"
+            }
+            catch(error:Exception){
+                return@withContext null
+            }
+        }
+    }
+    suspend fun writeOdgovore1(context: Context, odgovor: Odgovor) : String?{ //upisuje anketu u bazu
         return withContext(Dispatchers.IO) {
             try{
                 var db = AppDatabase1.getInstance(context)
@@ -94,10 +108,17 @@ object OdgovorRepository {
             }
         }
     }
+    suspend fun getAll1(context: Context) : List<Odgovor> { //dobavlja sve ankete iz baze
+        return withContext(Dispatchers.IO) {
+            var db = AppDatabase1.getInstance(context)
+            var ankete = db!!.odgovorDao().getAll()
+            return@withContext ankete
+        }
+    }
     suspend fun deleteAll(context: Context) :Int{ //dobavlja sve ankete iz baze
         return withContext(Dispatchers.IO) {
             var db = AppDatabase1.getInstance(context)
-            var ankete = db!!.odgovorDao().deleteAll()
+            var ankete = db!!.odgovor1DAO().deleteAll()
             return@withContext ankete
         }
     }

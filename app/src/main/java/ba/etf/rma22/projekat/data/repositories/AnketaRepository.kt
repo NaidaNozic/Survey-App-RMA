@@ -35,8 +35,18 @@ object AnketaRepository {
     }
     suspend fun getNotTaken(): List<Anketa> {
         var rjesenje: MutableList<Anketa> = mutableListOf()
+        var progres:Int?=0
         for (s in getAll()!!) {
-            if ((s.datumKraj != null && s.datumKraj!! < Date()) && s.progres < 100)
+            if(InternetConnection.prisutna){
+                val pocete=TakeAnketaRepository.getPoceteAnkete()
+                if (pocete != null) {
+                    progres= pocete.find { p->p.AnketumId==s.id }?.progres
+                }
+            }else{
+                progres= TakeAnketaRepository.getAnketaTakenByIdAnkete(MainActivity.getContext(),s.id)?.progres
+            }
+            if(progres!=null)
+            if (((s.datumKraj != null && s.datumKraj!! < Date())) && progres < 100)
                 rjesenje.add(s)
         }
         return rjesenje
@@ -56,7 +66,7 @@ object AnketaRepository {
             var response = getUpisane()
             var result: MutableList<Anketa> = mutableListOf()
             var brPitanja:Int =0
-            var odgovori: List<Odgovor>
+            var odgovori: List<Odgovor1>
             if (response != null)
                 for (r in response) {
                     if(InternetConnection.prisutna) {
@@ -80,7 +90,7 @@ object AnketaRepository {
                             for (o in odgovori)
                                 OdgovorRepository.writeOdgovore(
                                     MainActivity.getContext(),
-                                    Odgovor(o.odgovoreno, o.anketaTaken, o.pitanjeId, " ")
+                                    Odgovor1(o.odgovoreno, o.anketaTaken, o.pitanjeId, " ")
                                 )
                             //odgovori=OdgovorRepository.getOdgovoriAnketa(MainActivity.getContext(),pocetaAnketa.id)
                         } else odgovori = listOf()
@@ -193,8 +203,16 @@ object AnketaRepository {
     suspend fun getById(id: Int): Anketa? {//radi
         //vraća jednu anketu koja ima zadani id ili null ako anketa ne postoji
         return withContext(Dispatchers.IO) {
-            var response = ApiAdapter.retrofit.getAnketaById(id)
-            val responseBody = response.body()
+            var responseBody:Anketa?
+            if(InternetConnection.prisutna){
+                var response = ApiAdapter.retrofit.getAnketaById(id)
+                responseBody = response.body()
+                if(responseBody!=null)
+                writeAnkete(MainActivity.getContext(),Anketa(id,responseBody.naziv,"",responseBody.datumPocetak,
+                           responseBody.datumKraj,null,responseBody.trajanje,"",0,"",0))
+            }else{
+                responseBody= getAnketaById(MainActivity.getContext(),id)
+            }
             if (responseBody != null && responseBody.message == "Anketa not found.") return@withContext null
             return@withContext responseBody
         }

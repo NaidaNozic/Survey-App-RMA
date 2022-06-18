@@ -1,10 +1,7 @@
 package ba.etf.rma22.projekat.viewmodel
 
 import android.content.Context
-import android.util.Log
 import ba.etf.rma22.projekat.data.models.Anketa
-import ba.etf.rma22.projekat.data.models.AnketaTaken
-import ba.etf.rma22.projekat.data.models.Odgovor
 import ba.etf.rma22.projekat.data.repositories.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
