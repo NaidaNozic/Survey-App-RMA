@@ -59,5 +59,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.3.0")
     kapt("androidx.room:room-compiler:2.3.0")
     debugImplementation 'androidx.fragment:fragment-testing:1.4.1'
+    implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.15'
 
 }
