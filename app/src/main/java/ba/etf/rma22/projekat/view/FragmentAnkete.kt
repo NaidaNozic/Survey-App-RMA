@@ -41,6 +41,7 @@ class FragmentAnkete : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_ankete, container, false)
+
         //spinner
         spinner=view.findViewById(R.id.filterAnketa)
         val arrayAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, elementiSpinnera)
