@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() , PomocniInterfejs {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setContext(this)
-
        // context.deleteDatabase("RMA22DB")
         if(intent?.action == Intent.ACTION_VIEW)
             postaviHash(intent)
